@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,6 @@ namespace Manzili.Domain.Entities
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
         public string TokenHash { get; set; } = string.Empty;
-
 
 
         public DateTime ExpiresAt { get; set; }
