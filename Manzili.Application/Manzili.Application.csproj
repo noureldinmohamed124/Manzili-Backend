@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Manzili.Domain\Manzili.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstractions\Security\" />
+    <Folder Include="Abstractions\Persistence\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Events\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Queries\" />
+    <Folder Include="UseCases\" />
+  </ItemGroup>
+
 </Project>
