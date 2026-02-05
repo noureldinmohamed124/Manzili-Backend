@@ -1,0 +1,14 @@
+# Ignore Visual Studio cache/temp files
+# Visual Studio
+.vs/
+
+# Build output
+bin/
+obj/
+
+**/bin
+**/obj
+
+# User-specific files
+*.suo
+*.user
