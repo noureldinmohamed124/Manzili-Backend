@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Auth\" />
+    <Folder Include="Commands\Services\" />
     <Folder Include="Commands\Users\" />
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
