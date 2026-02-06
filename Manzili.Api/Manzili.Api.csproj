@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Manzili.Infrastructure\Manzili.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
 </Project>

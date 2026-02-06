@@ -1,5 +1,9 @@
 using Manzili.Api.Middlewares;
+using Manzili.Application.Abstractions.Persistence;
+using Manzili.Application.Abstractions.Security;
 using Manzili.Infrastructure.Persistence;
+using Manzili.Infrastructure.Repositories;
+using Manzili.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +19,20 @@ builder.Services.AddDbContext<ManziliDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Home")));
 
 
+// 2. Repositories
+builder.Services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
+builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
 
+
+// 3. Services
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
+builder.Services.AddLogging();
 
 
 
@@ -43,6 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<RateLimitingMiddleware>();
+
 
 app.UseHttpsRedirection();
 
