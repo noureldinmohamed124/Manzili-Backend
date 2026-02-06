@@ -1,3 +1,4 @@
+using Manzili.Api.Middlewares;
 using Manzili.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<RateLimitingMiddleware>();
 
 app.UseHttpsRedirection();
 
