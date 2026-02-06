@@ -60,6 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 
 app.UseHttpsRedirection();
