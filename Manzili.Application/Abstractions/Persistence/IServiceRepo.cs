@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Manzili.Application.Queries.Services.GetPaginatedServices;
+using Manzili.Application.Queries.Services.GetServiceDetails;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

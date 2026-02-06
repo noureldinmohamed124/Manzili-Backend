@@ -11,12 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Security\" />
-    <Folder Include="Abstractions\Persistence\" />
-    <Folder Include="Commands\" />
+    <Folder Include="Commands\Auth\" />
+    <Folder Include="Commands\Users\" />
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Queries\" />
     <Folder Include="UseCases\" />
   </ItemGroup>
 
