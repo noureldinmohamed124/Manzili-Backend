@@ -14,7 +14,7 @@
     <Folder Include="Commands\Services\" />
     <Folder Include="Commands\Users\" />
     <Folder Include="Events\" />
-    <Folder Include="UseCases\" />
+    <Folder Include="UseCases\Services\" />
   </ItemGroup>
 
 </Project>

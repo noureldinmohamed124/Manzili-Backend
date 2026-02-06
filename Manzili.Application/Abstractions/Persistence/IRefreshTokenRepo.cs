@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Manzili.Application.Abstractions.Persistence
 {
-    public interface IRefreshTokenRepo
+    public interface IRefreshTokenRepo : IGenericRepo<RefreshToken>
     {
         Task<RefreshToken?> GetByHashAsync(string tokenHash);
         Task<RefreshToken?> GetByUserIdAsync(int userId);

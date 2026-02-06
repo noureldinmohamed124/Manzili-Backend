@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Manzili.Application.Commands.Auth.LoginUser
 {
-    public record LoginUserCommand(string Email, string Password);
+    public record LoginUserCommand(string Email, string Password, string? IpAddress, string? DeviceInfo);
 }
