@@ -103,9 +103,9 @@ app.Run();
 
 
 /*Packages
- Install-Package Microsoft.EntityFrameworkCore -version 8.0.23 (API, Infrastructure)
- Install-Package Microsoft.EntityFrameworkCore.Tools -version 8.0.23 (API, Infrastructure)
- Install-Package Microsoft.EntityFrameworkCore.SqlServer -version 8.0.23 (API, Infrastructure)
+ Install-Package Microsoft.EntityFrameworkCore -version 8.0.23 (Infrastructure)
+ Install-Package Microsoft.EntityFrameworkCore.Tools -version 8.0.23 (Infrastructure)
+ Install-Package Microsoft.EntityFrameworkCore.SqlServer -version 8.0.23 (Infrastructure)
  Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.23 (API)
  Install-Package Microsoft.AspNetCore.Cryptography.KeyDerivation -version 8.0.23 (Infrastructure) 
 */
