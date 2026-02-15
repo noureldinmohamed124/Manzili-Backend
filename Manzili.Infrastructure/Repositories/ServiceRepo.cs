@@ -27,9 +27,20 @@ namespace Manzili.Infrastructure.Repositories
             if (q.IsRecommended.HasValue)
                 query = query.Where(s => s.IsRecommended == q.IsRecommended);
 
-            if (q.IsFeatured.HasValue)
-                query = query.Where(s => s.IsFeatured == q.IsFeatured);
+            if (q.TopDiscounts.HasValue)
+            {
+                var now = DateTime.UtcNow;
 
+                query = query.Where(s => s.Promotions.Any(
+                    p => p.IsActive && p.StartDate <= now &&
+                    (p.EndDate == null || p.EndDate >= now)
+                ));
+            }
+
+            if (q.MostPurchased.HasValue)
+                query = query.OrderByDescending(s => s.TotalPurchases);
+
+                    
             var totalServices = await query.CountAsync();
 
             var skipedServices = ((q.Page - 1) * q.PageSize);

@@ -32,8 +32,9 @@ namespace Manzili.Api.Controllers
                 Page = dto.Page == 0 ? 1 : dto.Page,
                 PageSize = dto.PageSize == 0 ? 10 : dto.PageSize,
                 CategoryId = dto.CategoryId,
-                IsFeatured = dto.IsFeatured,
-                IsRecommended = dto.IsRecommended
+                IsRecommended = dto.IsRecommended,
+                MostPurchased = dto.MostPurchased,
+                TopDiscounts = dto.TopDiscounts
             };
 
             var services = await _getAllServicesUseCase.ExecuteAsync(query);
