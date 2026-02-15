@@ -50,6 +50,11 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .WithMany(t => t.Transactions)
                 .HasForeignKey(x => x.TransactionTypeId);
 
+            builder.HasOne(t => t.Service)
+                .WithMany(s => s.Transactions)
+                .HasForeignKey(t => t.ServiceId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.HasOne(x => x.ParentTransaction)
                 .WithMany()
                 .HasForeignKey(x => x.ParentTransactionId)

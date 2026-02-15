@@ -35,6 +35,10 @@ namespace Manzili.Domain.Entities
         public int TransactionTypeId { get; set; }
         public TransactionType TransactionType { get; set; } = null!;
 
+        // Relation with Service (Optional)
+        public int? ServiceId { get; set; }
+        public Service? Service { get; set; }
+
         // Relation on itself
         public int? ParentTransactionId { get; set; }
         public Transaction? ParentTransaction { get; set; }
