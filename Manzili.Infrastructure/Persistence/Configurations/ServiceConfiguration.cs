@@ -25,6 +25,8 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .HasMaxLength(5000);
 
             builder.HasIndex(s => s.ViewsCount);
+
+            builder.HasIndex(s => s.TotalPurchases);
                 
 
             builder.Property(x => x.BasePrice)
