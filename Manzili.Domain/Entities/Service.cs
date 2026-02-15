@@ -13,6 +13,7 @@ namespace Manzili.Domain.Entities
         public string ServiceDescription { get; set; } = string.Empty;
         public decimal BasePrice { get; set; }
         public int ViewsCount { get; set; }
+        public int TotalPurchases { get; set; }
         public bool IsFeatured { get; set; }
         public bool IsRecommended { get; set; }
         public bool AutoAcceptance { get; set; }
