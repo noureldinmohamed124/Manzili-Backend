@@ -24,6 +24,9 @@ namespace Manzili.Infrastructure.Persistence.Configurations
             builder.Property(x => x.ServiceDescription)
                 .HasMaxLength(5000);
 
+            builder.HasIndex(s => s.ViewsCount);
+                
+
             builder.Property(x => x.BasePrice)
                 .HasPrecision(18, 2);
 
