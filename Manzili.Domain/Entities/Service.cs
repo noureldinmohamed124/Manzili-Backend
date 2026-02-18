@@ -17,6 +17,7 @@ namespace Manzili.Domain.Entities
         public bool IsFeatured { get; set; }
         public bool IsRecommended { get; set; }
         public bool AutoAcceptance { get; set; }
+        public bool HasActivePromotion { get; set; }
 
         // Audit
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
