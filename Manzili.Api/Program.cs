@@ -21,7 +21,7 @@ builder.Services.AddControllers();
 
 // 1. DbContext
 builder.Services.AddDbContext<ManziliDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Home")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("School")));
 
 
 // 2. Repositories
@@ -107,5 +107,7 @@ app.Run();
  Install-Package Microsoft.EntityFrameworkCore.Tools -version 8.0.23 (Infrastructure)
  Install-Package Microsoft.EntityFrameworkCore.SqlServer -version 8.0.23 (Infrastructure)
  Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.23 (API)
- Install-Package Microsoft.AspNetCore.Cryptography.KeyDerivation -version 8.0.23 (Infrastructure) 
+ Install-Package Microsoft.AspNetCore.Cryptography.KeyDerivation -version 8.0.23 (Infrastructure)
+
+ Add-Migration "migration name" -OutputDir Persistence
 */
