@@ -18,12 +18,12 @@ namespace Manzili.Application.UseCases.Services
             _serviceRepo = serviceRepo;
         }
 
-        public async Task<ServiceDetailsDto> ExecuteAsync(int id)
+        public async Task<ServiceDetailsDto> ExecuteAsync(GetServiceDetailsQuery query)
         {
-            var service = await _serviceRepo.GetServiceDetailsByIdAsync(id);
+            var service = await _serviceRepo.GetServiceDetailsByIdAsync(query.ServiceId);
 
             if (service == null)
-                throw new NotFoundException($"Service with Id {id} not found");
+                throw new NotFoundException($"Service with Id {query.ServiceId} not found");
 
             return service;
         }

@@ -1,5 +1,6 @@
 ﻿using Manzili.Api.DTOs.Services;
 using Manzili.Application.Queries.Services.GetPaginatedServices;
+using Manzili.Application.Queries.Services.GetServiceDetails;
 using Manzili.Application.UseCases.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -58,7 +59,9 @@ namespace Manzili.Api.Controllers
         [Authorize(Roles = "Provider,Buyer")]
         public async Task<IActionResult> GetServiceByIdAsync(int id)
         {
-            var service = await _getServiceUseCase.ExecuteAsync(id);
+            var query = new GetServiceDetailsQuery(ServiceId: id);
+
+            var service = await _getServiceUseCase.ExecuteAsync(query);
             return OkResponse(service);
         }
     }

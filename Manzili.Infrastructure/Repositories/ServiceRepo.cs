@@ -141,6 +141,7 @@ namespace Manzili.Infrastructure.Repositories
                     ServiceDescription = ss.ServiceDescription,
                     //Price = ss.Price,
                     Address = "Default Address",
+
                     Provider = new Provider
                     {
                         Id = ss.Provider.Id,
@@ -148,13 +149,28 @@ namespace Manzili.Infrastructure.Repositories
                         rating = 5, // defualt value right now
                         ReviewsNo = 0 // defualt value right now
                     },
-                    Options = ss.ServiceOptions.Select(o => new OptionsList
-                    {
-                        Id = o.Id,
-                        ServiceOptionName = o.ServiceOptionName,
-                        Price = o.Price,
-                    }).ToList(),
-                    Images = ss.ServiceImages.Select(i => new Image
+
+                    OptionGroups = ss.OptionGroups
+                        .OrderBy(og => og.DisplayOrder)
+                        .Select(g => new OptionGroupDto
+                        {
+                            Id = g.Id,
+                            Name = g.Name,
+                            IsRequired = g.IsRequired,
+                            AllowMultiple = g.AllowMultiple,
+                            
+                            Options = g.Options
+                                .OrderBy(o => o.DisplayOrder)
+                                .Select(o => new OptionsListDto{
+                                    Id = o.Id,
+                                    ServiceOptionName = o.ServiceOptionName,
+                                    PriceAdjustment = o.PriceAdjustment
+                                })
+                                .ToList()
+                        })
+                        .ToList(),
+                    
+                    Images = ss.ServiceImages.Select(i => new ImageDto
                     {
                         Id = i.Id,
                         ImageUrl = i.ImageUrl,
