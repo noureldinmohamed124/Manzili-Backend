@@ -10,7 +10,7 @@ namespace Manzili.Domain.Entities
     {
         public int Id { get; set; }
         public string ServiceOptionName { get; set; } = string.Empty;
-        public decimal PriceAdjustment { get; set; }
+        public decimal? PriceAdjustment { get; set; }
         public int DisplayOrder { get; set; }
 
         // Audit

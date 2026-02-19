@@ -22,7 +22,8 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(x => x.PriceAdjustment)
-                .HasPrecision(18, 2);
+                .HasPrecision(18, 2)
+                .IsRequired(false);
 
             builder.Property(x => x.DisplayOrder)
                 .HasDefaultValue(0);
