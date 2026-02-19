@@ -21,15 +21,22 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .HasMaxLength(200)
                 .IsRequired();
 
-            builder.Property(x => x.Price)
+            builder.Property(x => x.PriceAdjustment)
                 .HasPrecision(18, 2);
+
+            builder.Property(x => x.DisplayOrder)
+                .HasDefaultValue(0);
 
             builder.Property(x => x.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
-            builder.HasOne(x => x.Service)
-                .WithMany(s => s.ServiceOptions)
-                .HasForeignKey(x => x.ServiceId)
+            builder.HasIndex(x => new { x.OptionGroupId, x.ServiceOptionName })
+                    .IsUnique()
+                    .HasDatabaseName("UX_ServiceOption_Group_Name");
+
+            builder.HasOne(x => x.OptionGroup)
+                .WithMany(g => g.Options)
+                .HasForeignKey(x => x.OptionGroupId)
                 .OnDelete(DeleteBehavior.Cascade);
 
         }

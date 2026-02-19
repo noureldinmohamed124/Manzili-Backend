@@ -10,7 +10,8 @@ namespace Manzili.Domain.Entities
     {
         public int Id { get; set; }
         public string ServiceOptionName { get; set; } = string.Empty;
-        public decimal Price { get; set; }
+        public decimal PriceAdjustment { get; set; }
+        public int DisplayOrder { get; set; }
 
         // Audit
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -19,7 +20,7 @@ namespace Manzili.Domain.Entities
         // Navigation Properties
         // ============================
 
-        public int ServiceId { get; set; }
-        public Service Service { get; set; } = null!;
+        public int OptionGroupId { get; set; }
+        public ServiceOptionGroup OptionGroup { get; set; } = null!;
     }
 }

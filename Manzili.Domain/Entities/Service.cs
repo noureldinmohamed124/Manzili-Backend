@@ -27,10 +27,11 @@ namespace Manzili.Domain.Entities
         // Navigation Properties
         // ============================
 
-        public ICollection<ServiceOption> ServiceOptions { get; set; } = new List<ServiceOption>();
+        //public ICollection<ServiceOption> ServiceOptions { get; set; } = new List<ServiceOption>();
         public ICollection<ServiceImage> ServiceImages { get; set; } = new List<ServiceImage>();
         public ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+        public ICollection<ServiceOptionGroup> OptionGroups { get; set; } = new List<ServiceOptionGroup>();
 
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
