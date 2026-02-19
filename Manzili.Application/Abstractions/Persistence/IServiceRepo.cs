@@ -10,6 +10,7 @@ namespace Manzili.Application.Abstractions.Persistence
 {
     public interface IServiceRepo
     {
+        Task<HomeServicesDto> GetHomeServicesAsync(int take);
         Task<PaginatedServiceListDto> GetAllPaginatedForListingAsync(GetServicesQuery query);
         Task<ServiceDetailsDto?> GetServiceDetailsByIdAsync(int Id);
     }

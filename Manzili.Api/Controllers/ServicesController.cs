@@ -11,15 +11,27 @@ namespace Manzili.Api.Controllers
     [ApiController]
     public class ServicesController : BaseApiController
     {
+        private readonly GetHomeSectionUseCase _getHomeSectionUseCase;
         private readonly GetAllServicesUseCase _getAllServicesUseCase;
         private readonly GetServiceUseCase _getServiceUseCase;
 
-        public ServicesController(GetAllServicesUseCase getAllServicesUseCase, GetServiceUseCase getServiceUseCase)
+        public ServicesController(GetHomeSectionUseCase getHomeSectionUseCase, GetAllServicesUseCase getAllServicesUseCase, GetServiceUseCase getServiceUseCase)
         {
+            _getHomeSectionUseCase = getHomeSectionUseCase;
             _getAllServicesUseCase = getAllServicesUseCase;
             _getServiceUseCase = getServiceUseCase;
         }
 
+
+        // Get All Services - The whole Home Section
+        [HttpGet("home/{no}")]
+        [AllowAnonymous]
+        [Authorize(Roles = "Provider,Buyer")]
+        public async Task<IActionResult> GetHomeSection(int no)
+        {
+            var services = await _getHomeSectionUseCase.ExecuteAsync(no);
+            return OkResponse(services);
+        }
 
         // Get All Services
         [HttpGet]

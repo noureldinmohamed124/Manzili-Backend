@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,38 +17,92 @@ namespace Manzili.Infrastructure.Repositories
     {
         public ServiceRepo(ManziliDbContext context) : base(context) { }
 
+        public async Task<HomeServicesDto> GetHomeServicesAsync(int take = 10)
+        {
+            var baseQuery = _context.Services
+                .Where(s => s.Status.IsActive)
+                .AsNoTracking();
+
+            // Top Discounts
+            var topDiscountsTask = baseQuery
+                .Where(s => s.HasActivePromotion)
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(take)
+                .Select(ToListItem())
+                .ToListAsync();
+
+            // Recommended
+            var recommendedTask = baseQuery
+                .Where(s => s.IsRecommended)
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(take)
+                .Select(ToListItem())
+                .ToListAsync();
+
+            // Most Purchased
+            var mostPurchasedTask = baseQuery
+                .OrderByDescending(s => s.TotalPurchases)
+                .Take(take)
+                .Select(ToListItem())
+                .ToListAsync();
+
+            // Regular (Latest Services)
+            var regularTask = baseQuery
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(take)
+                .Select(ToListItem())
+                .ToListAsync();
+
+            // Execute in parallel
+            await Task.WhenAll(
+                topDiscountsTask,
+                recommendedTask,
+                mostPurchasedTask,
+                regularTask
+            );
+
+            return new HomeServicesDto
+            {
+                TopDiscounts = topDiscountsTask.Result,
+                Recommended = recommendedTask.Result,
+                MostPurchased = mostPurchasedTask.Result,
+                Regular = regularTask.Result
+            };
+        }
+
         public async Task<PaginatedServiceListDto> GetAllPaginatedForListingAsync(GetServicesQuery q)
         {
             var query = _context.Services
-                .Where(s => s.Status.IsActive).AsQueryable();
+                .Where(s => s.Status.IsActive)
+                .AsNoTracking(); // no tracking for faster read-only queries
 
+            // Filter by category
             if (q.CategoryId.HasValue)
                 query = query.Where(s => s.CategoryId == q.CategoryId);
 
-            if (q.IsRecommended.HasValue)
-                query = query.Where(s => s.IsRecommended == q.IsRecommended);
+            // Filter recommended
+            if (q.IsRecommended == true)
+                query = query.Where(s => s.IsRecommended);
 
-            if (q.TopDiscounts.HasValue)
+            // Filter top discounts using denormalized flag
+            if (q.TopDiscounts == true)
+                query = query.Where(s => s.HasActivePromotion);
+
+            // Ordering
+            if (q.MostPurchased == true)
             {
-                var now = DateTime.UtcNow;
-
-                query = query.Where(s => s.Promotions.Any(
-                    p => p.IsActive && p.StartDate <= now &&
-                    (p.EndDate == null || p.EndDate >= now)
-                ));
+                query = query.OrderByDescending(s => s.TotalPurchases);
+            }
+            else
+            {
+                query = query.OrderByDescending(s => s.CreatedAt);
             }
 
-            if (q.MostPurchased.HasValue)
-                query = query.OrderByDescending(s => s.TotalPurchases);
-
-                    
-            var totalServices = await query.CountAsync();
-
-            var skipedServices = ((q.Page - 1) * q.PageSize);
-            var services = await query
-                .OrderByDescending(s => s.CreatedAt)
+            // Pagination using "fetch one extra" to avoid expensive COUNT(*)
+            var skipedServices = (q.Page - 1) * q.PageSize;
+            var servicesList = await query
                 .Skip(skipedServices)
-                .Take(q.PageSize)
+                .Take(q.PageSize + 1) // +1 to check if there is more
                 .Select(s => new ServiceListItemDto
                 {
                     Id = s.Id,
@@ -57,18 +112,22 @@ namespace Manzili.Infrastructure.Repositories
                     Rating = 0,
                     ImageUrl = s.ServiceImages.Select(si => si.ImageUrl).FirstOrDefault()
                 })
-                .AsNoTracking()
                 .ToListAsync();
 
-            var pag = new PaginatedServiceListDto
+            // Determine if there are more pages
+            bool hasMore = servicesList.Count > q.PageSize;
+            if (hasMore)
+                servicesList.RemoveAt(q.PageSize); // remove extra
+
+            var paginated = new PaginatedServiceListDto
             {
-                Items = services,
+                Items = servicesList,
                 Page = q.Page,
                 PageSize = q.PageSize,
-                TotalPages = (int)Math.Ceiling((decimal)totalServices / q.PageSize)
+                HasMore = hasMore // new property instead of total pages
             };
-            return pag;
 
+            return paginated;
         }
 
         public async Task<ServiceDetailsDto?> GetServiceDetailsByIdAsync(int Id)
@@ -104,5 +163,24 @@ namespace Manzili.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
+
+
+        // Helper - Mapper
+        public static Expression<Func<Service, ServiceListItemDto>> ToListItem()
+        {
+            return s => new ServiceListItemDto
+            {
+                Id = s.Id,
+                Title = s.Title,
+                BasePrice = s.BasePrice,
+                ProviderName = s.Provider.FullName,
+                Rating = 0,
+                ImageUrl = s.ServiceImages
+                    .Select(i => i.ImageUrl)
+                    .FirstOrDefault()
+            };
+        }
+
+
     }
 }
