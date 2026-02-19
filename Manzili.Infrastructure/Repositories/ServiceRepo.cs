@@ -63,9 +63,9 @@ namespace Manzili.Infrastructure.Repositories
 
             return new HomeServicesDto
             {
-                TopDiscounts = topDiscountsTask.Result,
+                Top_Discounts = topDiscountsTask.Result,
                 Recommended = recommendedTask.Result,
-                MostPurchased = mostPurchasedTask.Result,
+                Most_Purchased = mostPurchasedTask.Result,
                 Regular = regularTask.Result
             };
         }
