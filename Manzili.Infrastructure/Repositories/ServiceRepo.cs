@@ -1,5 +1,6 @@
 ﻿using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Queries.Services.GetPaginatedServices;
+using Manzili.Application.Queries.Services.GetServiceByName;
 using Manzili.Application.Queries.Services.GetServiceDetails;
 using Manzili.Domain.Entities;
 using Manzili.Infrastructure.Persistence;
@@ -63,9 +64,9 @@ namespace Manzili.Infrastructure.Repositories
 
             return new HomeServicesDto
             {
-                Top_Discounts = topDiscountsTask.Result,
+                TopDiscounts = topDiscountsTask.Result,
                 Recommended = recommendedTask.Result,
-                Most_Purchased = mostPurchasedTask.Result,
+                MostPurchased = mostPurchasedTask.Result,
                 Regular = regularTask.Result
             };
         }
@@ -180,6 +181,38 @@ namespace Manzili.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<PagedResult<ServiceSearchDto>> SearchByNameAsync(SearchServicesQuery query)
+        {
+            var baseQuery = _context.Services
+                .AsNoTracking()
+                .Where(s => s.Title.Contains(query.Keyword));
+
+            var totalCount = await baseQuery.CountAsync();
+
+            var services = await baseQuery
+                .OrderBy(s => s.Title)
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(s => new ServiceSearchDto
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    BasePrice = s.BasePrice,
+                    ProviderName = s.Provider.FullName,
+                    ThumbnailImageUrl = s.ServiceImages
+                        .Select(i => i.ImageUrl)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            return new PagedResult<ServiceSearchDto>
+            {
+                Items = services,
+                TotalCount = totalCount,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
+        }
 
         // Helper - Mapper
         public static Expression<Func<Service, ServiceListItemDto>> ToListItem()
@@ -197,6 +230,6 @@ namespace Manzili.Infrastructure.Repositories
             };
         }
 
-
+        
     }
 }

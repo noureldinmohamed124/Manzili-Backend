@@ -21,7 +21,7 @@ builder.Services.AddControllers();
 
 // 1. DbContext
 builder.Services.AddDbContext<ManziliDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("School")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Home")));
 
 
 // 2. Repositories
@@ -46,6 +46,8 @@ builder.Services.AddScoped<LoginUserUseCase>();
 builder.Services.AddScoped<RefreshTokenUseCase>();
 builder.Services.AddScoped<GetAllServicesUseCase>();
 builder.Services.AddScoped<GetServiceUseCase>();
+builder.Services.AddScoped<GetHomeSectionUseCase>();
+builder.Services.AddScoped<SearchServicesUseCase>();
 
 
 

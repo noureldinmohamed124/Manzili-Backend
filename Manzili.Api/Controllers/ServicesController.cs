@@ -1,5 +1,6 @@
 ﻿using Manzili.Api.DTOs.Services;
 using Manzili.Application.Queries.Services.GetPaginatedServices;
+using Manzili.Application.Queries.Services.GetServiceByName;
 using Manzili.Application.Queries.Services.GetServiceDetails;
 using Manzili.Application.UseCases.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +16,16 @@ namespace Manzili.Api.Controllers
         private readonly GetHomeSectionUseCase _getHomeSectionUseCase;
         private readonly GetAllServicesUseCase _getAllServicesUseCase;
         private readonly GetServiceUseCase _getServiceUseCase;
+        private readonly SearchServicesUseCase _searchServicesUseCase;
 
-        public ServicesController(GetHomeSectionUseCase getHomeSectionUseCase, GetAllServicesUseCase getAllServicesUseCase, GetServiceUseCase getServiceUseCase)
+        public ServicesController(GetHomeSectionUseCase getHomeSectionUseCase, GetAllServicesUseCase getAllServicesUseCase, GetServiceUseCase getServiceUseCase, SearchServicesUseCase searchServicesUseCase)
         {
             _getHomeSectionUseCase = getHomeSectionUseCase;
             _getAllServicesUseCase = getAllServicesUseCase;
             _getServiceUseCase = getServiceUseCase;
+            _searchServicesUseCase = searchServicesUseCase;
         }
+
 
 
         // Get All Services - The whole Home Section
@@ -63,6 +67,20 @@ namespace Manzili.Api.Controllers
 
             var service = await _getServiceUseCase.ExecuteAsync(query);
             return OkResponse(service);
+        }
+
+        [HttpGet("search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchServiceByNameAsync([FromQuery] SearchServicesByNameRequestDto dto)
+        {
+            var query = new SearchServicesQuery(
+                Keyword: dto.Keyword,
+                PageNumber: dto.PageNumber,
+                PageSize: dto.PageSize
+            );
+
+            var services = await _searchServicesUseCase.ExecuteAsync(query);
+            return OkResponse(services);
         }
     }
 }
