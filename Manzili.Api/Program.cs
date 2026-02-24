@@ -109,7 +109,9 @@ app.Run();
  Install-Package Microsoft.EntityFrameworkCore.Tools -version 8.0.23 (Infrastructure)
  Install-Package Microsoft.EntityFrameworkCore.SqlServer -version 8.0.23 (Infrastructure)
  Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.23 (API)
+ Install-Package Microsoft.EntityFrameworkCore.Design -version 8.0.23 (API)
  Install-Package Microsoft.AspNetCore.Cryptography.KeyDerivation -version 8.0.23 (Infrastructure)
 
- Add-Migration "migration name" -OutputDir Persistence
+
+ Add-Migration InitialCreate -OutputDir Persistence/Migrations
 */
