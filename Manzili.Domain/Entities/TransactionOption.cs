@@ -19,5 +19,8 @@ namespace Manzili.Domain.Entities
 
         public int TransactionId { get; set; }
         public Transaction Transaction { get; set; } = null!;
+
+        public int ServiceOptionGroupId { get; set; }
+        public ServiceOptionGroup ServiceOptionGroup { get; set; } = null!;
     }
 }
