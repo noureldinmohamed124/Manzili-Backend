@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Services\" />
+    <Folder Include="Commands\Services\RequestService\" />
     <Folder Include="Commands\Users\" />
     <Folder Include="Events\" />
   </ItemGroup>
