@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+    <ItemGroup>
+    	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Manzili.Application\Manzili.Application.csproj" />
     <ProjectReference Include="..\Manzili.Domain\Manzili.Domain.csproj" />
