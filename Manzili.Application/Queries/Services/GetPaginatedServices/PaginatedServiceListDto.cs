@@ -24,5 +24,8 @@ namespace Manzili.Application.Queries.Services.GetPaginatedServices
         public decimal BasePrice { get; set; }
         public double Rating { get; set; }
         public string? ImageUrl { get; set; }
+
+        // Date for testing
+        public DateOnly CreatedAtDate { get; set; }
     }
 }
