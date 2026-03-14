@@ -26,7 +26,7 @@ namespace Manzili.Infrastructure.Repositories
                 .AsNoTracking();
 
             // Top Discounts
-            var topDiscountsTask = baseQuery
+            var topDiscountsTask = await baseQuery
                 .Where(s => s.HasActivePromotion)
                 .OrderByDescending(s => s.CreatedAt)
                 .Take(take)
@@ -34,7 +34,7 @@ namespace Manzili.Infrastructure.Repositories
                 .ToListAsync();
 
             // Recommended
-            var recommendedTask = baseQuery
+            var recommendedTask = await baseQuery
                 .Where(s => s.IsRecommended)
                 .OrderByDescending(s => s.CreatedAt)
                 .Take(take)
@@ -42,33 +42,33 @@ namespace Manzili.Infrastructure.Repositories
                 .ToListAsync();
 
             // Most Purchased
-            var mostPurchasedTask = baseQuery
+            var mostPurchasedTask = await baseQuery
                 .OrderByDescending(s => s.TotalPurchases)
                 .Take(take)
                 .Select(ToListItem())
                 .ToListAsync();
 
             // Regular (Latest Services)
-            var regularTask = baseQuery
+            var regularTask = await baseQuery
                 .OrderByDescending(s => s.CreatedAt)
                 .Take(take)
                 .Select(ToListItem())
                 .ToListAsync();
 
             // Execute in parallel
-            await Task.WhenAll(
-                topDiscountsTask,
-                recommendedTask,
-                mostPurchasedTask,
-                regularTask
-            );
+            //await Task.WhenAll(
+            //    topDiscountsTask,
+            //    recommendedTask,
+            //    mostPurchasedTask,
+            //    regularTask
+            //);
 
             return new HomeServicesDto
             {
-                TopDiscounts = topDiscountsTask.Result,
-                Recommended = recommendedTask.Result,
-                MostPurchased = mostPurchasedTask.Result,
-                Regular = regularTask.Result
+                TopDiscounts = topDiscountsTask,
+                Recommended = recommendedTask,
+                MostPurchased = mostPurchasedTask,
+                Regular = regularTask
             };
         }
 
@@ -165,7 +165,7 @@ namespace Manzili.Infrastructure.Repositories
             var totalCount = await baseQuery.CountAsync();
 
             var services = await baseQuery
-                .OrderBy(s => s.Title)
+                .OrderBy(s => s.Id)
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize)
                 .Select(s => new ServiceSearchDto
