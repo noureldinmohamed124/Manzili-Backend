@@ -8,7 +8,8 @@ namespace Manzili.Application.Common.Enums
 {
     public enum ServiceFilterType
     {
-        Recommended,
-        TopDiscounts
+        Recommended = 1,
+        TopDiscounts = 2,
+        MostPurchased = 3
     }
 }

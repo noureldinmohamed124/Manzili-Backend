@@ -3,6 +3,7 @@ using Manzili.Application.Queries.Services.GetPaginatedServices;
 using Manzili.Application.Queries.Services.GetServiceByName;
 using Manzili.Application.Queries.Services.GetServiceDetails;
 using Manzili.Domain.Entities;
+using Manzili.Infrastructure.Data.QueryExtensions;
 using Manzili.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -73,62 +74,36 @@ namespace Manzili.Infrastructure.Repositories
 
         public async Task<PaginatedServiceListDto> GetAllPaginatedForListingAsync(GetServicesQuery q)
         {
-            var query = _context.Services
+            var baseQuery = _context.Services
                 .Where(s => s.Status.IsActive)
-                .AsNoTracking(); // no tracking for faster read-only queries
+                .AsNoTracking();
 
-            // Filter by category
-            if (q.CategoryId.HasValue)
-                query = query.Where(s => s.CategoryId == q.CategoryId);
+            var query = new ServiceQueryBuilder(baseQuery)
+                .FilterByCategory(q.CategoryId)
+                .ApplyFilter(q.Filter)
+                .ApplySorting(q.SortBy)
+                .Build();
 
-            // Filter recommended
-            if (q.IsRecommended == true)
-                query = query.Where(s => s.IsRecommended);
+            int skip = (q.Page - 1) * q.PageSize;
 
-            // Filter top discounts using denormalized flag
-            if (q.TopDiscounts == true)
-                query = query.Where(s => s.HasActivePromotion);
-
-            // Ordering
-            if (q.MostPurchased == true)
-            {
-                query = query.OrderByDescending(s => s.TotalPurchases);
-            }
-            else
-            {
-                query = query.OrderByDescending(s => s.CreatedAt);
-            }
-
-            // Pagination using "fetch one extra" to avoid expensive COUNT(*)
-            var skipedServices = (q.Page - 1) * q.PageSize;
-            var servicesList = await query
-                .Skip(skipedServices)
-                .Take(q.PageSize + 1) // +1 to check if there is more
-                .Select(s => new ServiceListItemDto
-                {
-                    Id = s.Id,
-                    Title = s.Title,
-                    BasePrice = s.BasePrice,
-                    ProviderName = s.Provider.FullName,
-                    Rating = 0,
-                    ImageUrl = s.ServiceImages.Select(si => si.ImageUrl).FirstOrDefault()
-                })
+            var services = await query
+                .Skip(skip)
+                .Take(q.PageSize + 1) // fetch extra row
+                .Select(ToListItem())
                 .ToListAsync();
 
-            // Determine if there are more pages
-            bool hasMore = servicesList.Count > q.PageSize;
-            if (hasMore)
-                servicesList.RemoveAt(q.PageSize); // remove extra
+            bool hasMore = services.Count > q.PageSize;
 
-            var paginated = new PaginatedServiceListDto
+            if (hasMore)
+                services.RemoveAt(q.PageSize);
+
+            return new PaginatedServiceListDto
             {
-                Items = servicesList,
+                Items = services,
                 Page = q.Page,
                 PageSize = q.PageSize,
-                HasMore = hasMore // new property instead of total pages
+                HasMore = hasMore
             };
-
-            return paginated;
         }
 
         public async Task<ServiceDetailsDto?> GetServiceDetailsByIdAsync(int Id)
