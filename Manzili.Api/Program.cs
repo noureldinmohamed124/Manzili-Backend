@@ -81,6 +81,13 @@ builder.Services.AddAuthentication(options =>
 
 
 
+// force lowercase URLs
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+});
+
+
 // Swagger (optional)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
