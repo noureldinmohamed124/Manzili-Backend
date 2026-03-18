@@ -1,7 +1,6 @@
-﻿namespace Manzili.Api.DTOs.Services
+﻿namespace Manzili.Api.DTOs.Transactions
 {
-
-    public class RequestServiceRequestDto
+    public class RequestServiceDto
     {
         public int ServiceId { get; set; }
         public string? CustomizationText { get; set; }

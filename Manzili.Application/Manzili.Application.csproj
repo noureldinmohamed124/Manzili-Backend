@@ -14,6 +14,8 @@
     <Folder Include="Commands\Services\RequestService\" />
     <Folder Include="Commands\Users\" />
     <Folder Include="Events\" />
+    <Folder Include="UseCases\Transactions\" />
+    <Folder Include="UseCases\Orders\" />
   </ItemGroup>
 
 </Project>
