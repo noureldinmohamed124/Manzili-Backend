@@ -60,7 +60,7 @@ namespace Manzili.Api.Controllers
         [HttpGet("{id:int}")]
         [AllowAnonymous]
         [Authorize(Roles = "Provider,Buyer")]
-        public async Task<IActionResult> GetServiceByIdAsync(int id)
+        public async Task<IActionResult> GetServiceById(int id)
         {
             var query = new GetServiceDetailsQuery(ServiceId: id);
 
@@ -70,7 +70,7 @@ namespace Manzili.Api.Controllers
 
         [HttpGet("search")]
         [AllowAnonymous]
-        public async Task<IActionResult> SearchServiceByNameAsync([FromQuery] SearchServicesByNameRequestDto dto)
+        public async Task<IActionResult> SearchServiceByName([FromQuery] SearchServicesByNameRequestDto dto)
         {
             var query = new SearchServicesQuery(
                 Keyword: dto.Keyword,
