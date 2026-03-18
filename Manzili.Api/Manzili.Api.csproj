@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Manzili.Infrastructure\Manzili.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\Transactions\" />
+  </ItemGroup>
+
 </Project>

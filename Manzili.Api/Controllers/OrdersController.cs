@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Manzili.Api.DTOs.Orders;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manzili.Api.Controllers
@@ -7,5 +8,15 @@ namespace Manzili.Api.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> RequestAService(RequestServiceDto dto)
+        {
+
+
+            return Ok();
+        }
     }
 }
