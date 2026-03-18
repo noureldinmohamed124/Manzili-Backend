@@ -12,6 +12,12 @@
     public class SelectedOptionGroupDto
     {
         public int GroupId { get; set; }
-        public List<int> OptionIds { get; set; } = new List<int>();
+        public List<OptionItemDto> Items { get; set; } = new List<OptionItemDto>();
+    }
+
+    public class OptionItemDto
+    {
+        public int OptionId { get; set; }
+        public int Quantity { get; set; } = 1;
     }
 }

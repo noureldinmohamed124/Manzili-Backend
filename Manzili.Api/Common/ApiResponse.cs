@@ -1,4 +1,4 @@
-﻿namespace Manzili.Api.DTOs
+﻿namespace Manzili.Api.Common
 {
     public class ApiResponse<T>
     {

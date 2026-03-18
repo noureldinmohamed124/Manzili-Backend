@@ -1,6 +1,7 @@
 ﻿using Manzili.Application.Queries.Services.GetPaginatedServices;
 using Manzili.Application.Queries.Services.GetServiceByName;
 using Manzili.Application.Queries.Services.GetServiceDetails;
+using Manzili.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Manzili.Application.Abstractions.Persistence
 {
-    public interface IServiceRepo
+    public interface IServiceRepo : IGenericRepo<Service>
     {
         Task<HomeServicesDto> GetHomeServicesAsync(int take);
         Task<PaginatedServiceListDto> GetAllPaginatedForListingAsync(GetServicesQuery query);
