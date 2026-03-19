@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manzili.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Manzili.Application.Abstractions.Persistence
 {
-    internal class ITransactionRepo
+    public interface ITransactionRepo : IGenericRepo<Transaction>
     {
     }
 }

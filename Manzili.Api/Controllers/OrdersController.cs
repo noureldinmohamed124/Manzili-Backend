@@ -18,7 +18,7 @@ namespace Manzili.Api.Controllers
             _requestServiceUseCase = requestServiceUseCase;
         }
 
-        [HttpPost]
+        [HttpPost("request")]
         public async Task<IActionResult> RequestAService(RequestServiceDto dto)
         {
             var command = new RequestServiceCommand(
@@ -36,9 +36,9 @@ namespace Manzili.Api.Controllers
                     )).ToList()
             );
 
-            await _requestServiceUseCase.ExecuteAsync(command);
+            var orderId = await _requestServiceUseCase.ExecuteAsync(command);
 
-            return OkResponse(command, Messages.Order.Created);
+            return OkResponse(orderId, Messages.Order.Created);
         }
     }
 }
