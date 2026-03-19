@@ -1,6 +1,7 @@
 ﻿using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
 using Manzili.Application.Commands.Orders;
+using Manzili.Application.Common.Extensions;
 using Manzili.Application.Exceptions;
 using Manzili.Domain.Entities;
 using Manzili.Domain.Enums;
@@ -51,7 +52,7 @@ namespace Manzili.Application.UseCases.Orders
                 BuyerId = customerId,
                 ProviderId = service.ProviderId,
                 ServiceId = service.Id,
-                TransactionTypeId = (int)OrderStatus.Request
+                TransactionTypeId = TransactionStatus.Request.ToId()
             };
 
             foreach(var optionGroup in command.OptionGroups)

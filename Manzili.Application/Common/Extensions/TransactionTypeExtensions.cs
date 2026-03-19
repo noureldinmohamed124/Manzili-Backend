@@ -12,7 +12,5 @@ namespace Manzili.Application.Common.Extensions
         public static int ToId(this TransactionStatus status)
         => (int)status;
 
-        public static int ToId(this OrderStatus status)
-        => (int)status;
     }
 }

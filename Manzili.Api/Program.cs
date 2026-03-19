@@ -2,6 +2,7 @@ using Manzili.Api.Middlewares;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
 using Manzili.Application.UseCases.Auth;
+using Manzili.Application.UseCases.Orders;
 using Manzili.Application.UseCases.Services;
 using Manzili.Infrastructure.Persistence;
 using Manzili.Infrastructure.Repositories;
@@ -55,6 +56,7 @@ builder.Services.AddScoped<GetAllServicesUseCase>();
 builder.Services.AddScoped<GetServiceUseCase>();
 builder.Services.AddScoped<GetHomeSectionUseCase>();
 builder.Services.AddScoped<SearchServicesUseCase>();
+builder.Services.AddScoped<RequestServiceUseCase>();
 
 
 
