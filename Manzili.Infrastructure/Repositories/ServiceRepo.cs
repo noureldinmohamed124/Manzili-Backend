@@ -115,7 +115,7 @@ namespace Manzili.Infrastructure.Repositories
                     Id = ss.Id,
                     Title = ss.Title,
                     ServiceDescription = ss.ServiceDescription,
-                    //Price = ss.Price,
+                    BasePrice = ss.BasePrice,
                     Address = "Default Address",
 
                     Provider = new Provider
