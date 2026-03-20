@@ -129,5 +129,5 @@ app.Run();
  Install-Package Microsoft.AspNetCore.Cryptography.KeyDerivation -version 8.0.23 (Infrastructure)
 
 
- Add-Migration InitialCreate -OutputDir Persistence/Migrations
+ Add-Migration InitialCreate -OutputDir Data/Migrations
 */

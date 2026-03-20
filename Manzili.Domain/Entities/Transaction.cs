@@ -15,6 +15,14 @@ namespace Manzili.Domain.Entities
         public decimal CashDiscount { get; set; }
         public decimal TotalPrice { get; set; }
 
+
+        // Repricing
+        public decimal? ProposedPrice { get; set; }
+        public string? RePricingReason { get; set; }
+
+        // Rejection
+        public string? RejectionReason { get; set; }
+
         // Audit
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

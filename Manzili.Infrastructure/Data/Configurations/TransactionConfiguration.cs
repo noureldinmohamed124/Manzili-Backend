@@ -23,6 +23,7 @@ namespace Manzili.Infrastructure.Persistence.Configurations
             builder.Property(x => x.CustomRequestImage)
                 .HasMaxLength(2000)
                 .IsRequired(false);
+            
 
             builder.Property(x => x.RawPrice)
                 .HasPrecision(18, 2);
@@ -32,6 +33,15 @@ namespace Manzili.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.TotalPrice)
                 .HasPrecision(18, 2);
+
+            builder.Property(t => t.ProposedPrice)
+                .HasPrecision(18, 2);
+
+            builder.Property(t => t.RePricingReason)
+                .IsRequired(false);
+
+            builder.Property(t => t.RejectionReason)
+                .IsRequired(false);
 
             builder.Property(x => x.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");

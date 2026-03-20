@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Manzili.Infrastructure.Persistence.Migrations
+namespace Manzili.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ManziliDbContext))]
-    [Migration("20260319210515_EditOnTransactionOptionGroup")]
-    partial class EditOnTransactionOptionGroup
+    [Migration("20260320091307_add Repricing and Rejection fields in Transaction table 2")]
+    partial class addRepricingandRejectionfieldsinTransactiontable2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -660,12 +660,22 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                     b.Property<int?>("ParentTransactionId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("ProposedPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("RawPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("RePricingReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int");
