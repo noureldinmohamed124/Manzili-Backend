@@ -40,7 +40,6 @@ builder.Services.AddScoped<IServiceOptionRepo, ServiceOptionRepo>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddLogging();

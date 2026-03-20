@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Manzili.Infrastructure.Persistence.Migrations
+namespace Manzili.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ManziliDbContext))]
-    [Migration("20260302014631_Add ServiceOptionGroupId in TransactionOption Table")]
-    partial class AddServiceOptionGroupIdinTransactionOptionTable
+    [Migration("20260320162902_ReInitialCreateV2Fix")]
+    partial class ReInitialCreateV2Fix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -660,12 +660,22 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                     b.Property<int?>("ParentTransactionId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("ProposedPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("RawPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("RePricingReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int");
@@ -708,7 +718,7 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -720,12 +730,15 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                     b.Property<int>("ServiceOptionGroupId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ServiceOptionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TransactionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServiceOptionGroupId");
+                    b.HasIndex("ServiceOptionId");
 
                     b.HasIndex("TransactionId");
 
@@ -1040,9 +1053,9 @@ namespace Manzili.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Manzili.Domain.Entities.TransactionOption", b =>
                 {
-                    b.HasOne("Manzili.Domain.Entities.ServiceOptionGroup", "ServiceOptionGroup")
+                    b.HasOne("Manzili.Domain.Entities.ServiceOption", "ServiceOption")
                         .WithMany()
-                        .HasForeignKey("ServiceOptionGroupId")
+                        .HasForeignKey("ServiceOptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1052,7 +1065,7 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ServiceOptionGroup");
+                    b.Navigation("ServiceOption");
 
                     b.Navigation("Transaction");
                 });

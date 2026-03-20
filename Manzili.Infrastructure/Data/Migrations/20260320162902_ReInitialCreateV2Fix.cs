@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Manzili.Infrastructure.Persistence.Migrations
+namespace Manzili.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class ReInitialCreateV2Fix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -326,6 +326,9 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                     RawPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CashDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    ProposedPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    RePricingReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RejectionReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BuyerId = table.Column<int>(type: "int", nullable: false),
@@ -455,13 +458,21 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OptionName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    TransactionId = table.Column<int>(type: "int", nullable: false)
+                    TransactionId = table.Column<int>(type: "int", nullable: false),
+                    ServiceOptionGroupId = table.Column<int>(type: "int", nullable: false),
+                    ServiceOptionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TransactionOptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransactionOptions_ServiceOptions_ServiceOptionId",
+                        column: x => x.ServiceOptionId,
+                        principalTable: "ServiceOptions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TransactionOptions_Transactions_TransactionId",
                         column: x => x.TransactionId,
@@ -603,6 +614,11 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TransactionOptions_ServiceOptionId",
+                table: "TransactionOptions",
+                column: "ServiceOptionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransactionOptions_TransactionId",
                 table: "TransactionOptions",
                 column: "TransactionId");
@@ -670,25 +686,25 @@ namespace Manzili.Infrastructure.Persistence.Migrations
                 name: "ServiceImages");
 
             migrationBuilder.DropTable(
-                name: "ServiceOptions");
-
-            migrationBuilder.DropTable(
                 name: "TransactionOptions");
 
             migrationBuilder.DropTable(
                 name: "Promotions");
 
             migrationBuilder.DropTable(
-                name: "ServiceOptionGroups");
+                name: "ServiceOptions");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "ServiceOptionGroups");
 
             migrationBuilder.DropTable(
                 name: "TransactionTypes");
+
+            migrationBuilder.DropTable(
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Categories");
