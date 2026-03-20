@@ -18,6 +18,7 @@ namespace Manzili.Api.Controllers
             _requestServiceUseCase = requestServiceUseCase;
         }
 
+        // by the buyer
         [HttpPost("request")]
         public async Task<IActionResult> RequestAService(RequestServiceDto dto)
         {
@@ -39,6 +40,33 @@ namespace Manzili.Api.Controllers
             var orderId = await _requestServiceUseCase.ExecuteAsync(command);
 
             return OkResponse(orderId, Messages.Order.Created);
+        }
+
+
+        // accept the service request from the buyer
+        [HttpPost("accept")]
+        public async Task<IActionResult> AcceptTheServiceRequest()
+        {
+
+            return OkResponse("");
+        }
+
+
+        // Reprice the Request by the provider
+        [HttpPost("reprice")]
+        public async Task<IActionResult> RepriceTheServiceRequest()
+        {
+
+            return OkResponse("");
+        }
+
+
+        // accept the RePrice by the buyer
+        [HttpPost("accept-price")]
+        public async Task<IActionResult> AcceptTheRequestRePrice()
+        {
+
+            return OkResponse("");
         }
     }
 }
