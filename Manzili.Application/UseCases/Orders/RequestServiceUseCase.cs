@@ -39,7 +39,6 @@ namespace Manzili.Application.UseCases.Orders
             await ValidateRequestAsync(command.ServiceId, customerId);
 
             var service = await _serviceRepo.GetByIdAsync(command.ServiceId);
-
             
 
             decimal subtotal = 0;
