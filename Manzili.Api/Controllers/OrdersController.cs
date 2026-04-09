@@ -18,7 +18,17 @@ namespace Manzili.Api.Controllers
             _requestServiceUseCase = requestServiceUseCase;
         }
 
-        // by the buyer
+
+        // by the buyer to get the approved requests from the seller (waiting for payment)
+        [HttpGet("approved")]
+        public async Task<IActionResult> GetAllAcceptedRequests()
+        {
+
+            return OkResponse("");
+        }
+
+
+        // by the buyer (Order a service)
         [HttpPost("request")]
         public async Task<IActionResult> RequestAService(RequestServiceDto dto)
         {
@@ -45,7 +55,7 @@ namespace Manzili.Api.Controllers
 
         // accept the service request from the buyer
         [HttpPost("accept")]
-        public async Task<IActionResult> AcceptTheServiceRequest()
+        public async Task<IActionResult> AcceptTheOrder()
         {
 
             return OkResponse("");
@@ -54,7 +64,7 @@ namespace Manzili.Api.Controllers
 
         // Reprice the Request by the provider
         [HttpPost("reprice")]
-        public async Task<IActionResult> RepriceTheServiceRequest()
+        public async Task<IActionResult> RepriceTheOrder(RePriceOrderDto dto)
         {
 
             return OkResponse("");
