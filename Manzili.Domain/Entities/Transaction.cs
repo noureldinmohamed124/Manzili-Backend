@@ -51,5 +51,9 @@ namespace Manzili.Domain.Entities
         // Relation on itself
         public int? ParentTransactionId { get; set; }
         public Transaction? ParentTransaction { get; set; }
+
+        // Relation with the Payment Proof
+        public int? PaymentProofId { get; set; }
+        public PaymentProof? PaymentProof { get; set; }
     }
 }

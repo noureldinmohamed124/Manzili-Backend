@@ -22,6 +22,7 @@ namespace Manzili.Infrastructure.Persistence
         public DbSet<ServiceImage> ServiceImages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<PaymentProof> PaymentProofs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

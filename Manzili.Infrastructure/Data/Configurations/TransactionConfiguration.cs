@@ -72,6 +72,12 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.ParentTransactionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
+            builder.HasOne(t => t.PaymentProof)
+                .WithMany(p => p.Transactions)
+                .HasForeignKey(t => t.PaymentProofId)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
 }
