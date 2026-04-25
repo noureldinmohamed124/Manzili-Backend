@@ -1,4 +1,4 @@
-using Manzili.Api.Middlewares;
+﻿using Manzili.Api.Middlewares;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
 using Manzili.Application.UseCases.Auth;
@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,11 +52,14 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<RegisterUserUseCase>();
 builder.Services.AddScoped<LoginUserUseCase>();
 builder.Services.AddScoped<RefreshTokenUseCase>();
+// Services
 builder.Services.AddScoped<GetAllServicesUseCase>();
 builder.Services.AddScoped<GetServiceUseCase>();
 builder.Services.AddScoped<GetHomeSectionUseCase>();
 builder.Services.AddScoped<SearchServicesUseCase>();
+// Orders
 builder.Services.AddScoped<RequestServiceUseCase>();
+builder.Services.AddScoped<GetAllOrdersUseCase>();
 
 
 
@@ -91,6 +95,15 @@ builder.Services.AddRouting(options =>
     options.LowercaseUrls = true;
 });
 
+// When converting enums to/from JSON → use names instead of numbers
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters
+            .Add(new JsonStringEnumConverter());
+    });
+
 
 // Swagger (optional)
 builder.Services.AddEndpointsApiExplorer();
@@ -105,7 +118,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<RateLimitingMiddleware>();
+//app.UseMiddleware<RateLimitingMiddleware>();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();

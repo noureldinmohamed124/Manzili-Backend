@@ -1,6 +1,7 @@
 ﻿using Manzili.Application.Abstractions.Persistence;
+using Manzili.Application.Common.Enums;
 using Manzili.Application.Common.Extensions;
-using Manzili.Application.Queries.Orders.GetAcceptedOrders;
+using Manzili.Application.Queries.Orders.GetAllOrders;
 using Manzili.Domain.Entities;
 using Manzili.Domain.Enums;
 using Manzili.Infrastructure.Persistence;
@@ -19,23 +20,38 @@ namespace Manzili.Infrastructure.Repositories
         {
         }
 
-        public async Task<AcceptedOrdersListDto> GetAcceptedOrdersForBuyerAsync(int buyerId)
+        public async Task<OrdersListDto> GetAllOrdersAsync(int buyerId, OrderTransactionTypeEnum? status)
         {
-            var AcceptedOrdersId = TransactionStatus.Accepted.ToId();
-            var AcceptedOrdersList = new AcceptedOrdersListDto();
+            var query = _context.Transactions
+                .Where(t => t.BuyerId == buyerId);
 
-            AcceptedOrdersList.Items = await _context.Transactions
-                .Where(t => t.BuyerId == buyerId && t.TransactionTypeId == AcceptedOrdersId)
-                .Select(t => new AcceptedOrderItemDto
+            if (status.HasValue)
+            {
+                query = query.Where(t => t.TransactionTypeId == (int)status.Value);
+            }
+
+            var orders = new OrdersListDto();
+
+            orders.Items = await query
+                .OrderByDescending(t => t.CreatedAt)
+                .Select(t => new OrderItemDto
                 {
                     Id = t.Id,
                     ServiceName = t.Service!.Title,
                     TotalPrice = t.TotalPrice,
-                    SellerName = t.Provider.FullName,
-                    
+                    Status = t.TransactionType.TransactionTypeName,
+                    ProviderName = t.Provider.FullName,
+                    CreatedAt = t.CreatedAt,
+                    CustomizationDetails = t.CustomRequestText,
+                    Options = t.TransactionOptions.Select(to => new OrderItemOptions
+                    {
+                        GroupOption = to.ServiceOptionGroup.Name,
+                        Option = to.OptionName,
+                        Quantity = to.Quantity,
+                    }).ToList()
                 }).ToListAsync();
 
-            return AcceptedOrdersList;
+            return orders;
         }
     }
 }

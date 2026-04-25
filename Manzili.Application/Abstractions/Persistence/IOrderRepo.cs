@@ -1,4 +1,5 @@
-﻿using Manzili.Application.Queries.Orders.GetAcceptedOrders;
+﻿using Manzili.Application.Common.Enums;
+using Manzili.Application.Queries.Orders.GetAllOrders;
 using Manzili.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Manzili.Application.Abstractions.Persistence
 {
     public interface IOrderRepo : IGenericRepo<Transaction>
     {
-        public Task<AcceptedOrdersListDto> GetAcceptedOrdersForBuyerAsync(int buyerId);
+        public Task<OrdersListDto> GetAllOrdersAsync(int buyerId, OrderTransactionTypeEnum? status);
     }
 }

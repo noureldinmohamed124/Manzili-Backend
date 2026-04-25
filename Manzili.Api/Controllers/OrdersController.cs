@@ -1,6 +1,7 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Orders;
 using Manzili.Application.Commands.Orders;
+using Manzili.Application.Queries.Orders.GetAllOrders;
 using Manzili.Application.UseCases.Orders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,19 +13,28 @@ namespace Manzili.Api.Controllers
     public class OrdersController : BaseApiController
     {
         private readonly RequestServiceUseCase _requestServiceUseCase;
+        private readonly GetAllOrdersUseCase _getAllOrdersUseCase;
 
-        public OrdersController(RequestServiceUseCase requestServiceUseCase)
+        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase)
         {
             _requestServiceUseCase = requestServiceUseCase;
+            _getAllOrdersUseCase = getAllOrdersUseCase;
         }
 
 
         // by the buyer to get the approved requests from the seller (waiting for payment)
-        [HttpGet("approved")]
-        public async Task<IActionResult> GetAllAcceptedRequests()
+        [HttpGet()]
+        public async Task<IActionResult> GetAllOrders([FromQuery]GetOrdersRequestDto dto)
         {
+            var command = new GetOrdersQuery(
+                Status: dto.status,
+                Page: dto.Page,
+                PageSize: dto.PageSize
+            );
 
-            return OkResponse("");
+            var orders = await _getAllOrdersUseCase.ExecuteAsync(command);
+
+            return OkResponse(orders);
         }
 
 
@@ -53,30 +63,30 @@ namespace Manzili.Api.Controllers
         }
 
 
-        // accept the service request from the buyer
-        [HttpPost("accept")]
-        public async Task<IActionResult> AcceptTheOrder()
-        {
+        //// accept the service request from the buyer
+        //[HttpPost("accept")]
+        //public async Task<IActionResult> AcceptTheOrder()
+        //{
 
-            return OkResponse("");
-        }
-
-
-        // Reprice the Request by the provider
-        [HttpPost("reprice")]
-        public async Task<IActionResult> RepriceTheOrder(RePriceOrderDto dto)
-        {
-
-            return OkResponse("");
-        }
+        //    return OkResponse("");
+        //}
 
 
-        // accept the RePrice by the buyer
-        [HttpPost("accept-price")]
-        public async Task<IActionResult> AcceptTheRequestRePrice()
-        {
+        //// Reprice the Request by the provider
+        //[HttpPost("reprice")]
+        //public async Task<IActionResult> RepriceTheOrder(RePriceOrderDto dto)
+        //{
 
-            return OkResponse("");
-        }
+        //    return OkResponse("");
+        //}
+
+
+        //// accept the RePrice by the buyer
+        //[HttpPost("accept-price")]
+        //public async Task<IActionResult> AcceptTheRequestRePrice()
+        //{
+
+        //    return OkResponse("");
+        //}
     }
 }

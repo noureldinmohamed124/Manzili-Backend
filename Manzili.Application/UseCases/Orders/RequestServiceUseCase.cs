@@ -42,7 +42,7 @@ namespace Manzili.Application.UseCases.Orders
             
 
             decimal subtotal = 0;
-            subtotal = service.BasePrice;
+            subtotal = service!.BasePrice;
 
             var transaction = new Transaction
             {
@@ -99,11 +99,14 @@ namespace Manzili.Application.UseCases.Orders
 
             var provider = await _userRepo.GetByIdAsync(service.ProviderId);
 
+            if (provider == null)
+                throw new ConflictException("Provider of this Service not available right now");
+
             if (provider.IsBlocked)
                 throw new ConflictException("This Provider/Service not avalible right now");
 
             if (service.ProviderId == customerId)
-                throw new ConflictException("You cannot request your own service");
+                throw new ConflictException("You can not request your own service");
         }
     }
 }

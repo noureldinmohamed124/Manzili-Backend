@@ -201,7 +201,8 @@ namespace Manzili.Infrastructure.Repositories
                 Rating = 0,
                 ImageUrl = s.ServiceImages
                     .Select(i => i.ImageUrl)
-                    .FirstOrDefault()
+                    .FirstOrDefault(),
+                CreatedAtDate = DateOnly.FromDateTime(s.CreatedAt),
             };
         }
 
