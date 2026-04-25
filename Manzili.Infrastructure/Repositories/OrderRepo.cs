@@ -37,6 +37,7 @@ namespace Manzili.Infrastructure.Repositories
                 .Select(t => new OrderItemDto
                 {
                     Id = t.Id,
+                    OrderCode = t.TransactionCode,
                     ServiceName = t.Service!.Title,
                     TotalPrice = t.TotalPrice,
                     Status = t.TransactionType.TransactionTypeName,
@@ -52,6 +53,11 @@ namespace Manzili.Infrastructure.Repositories
                 }).ToListAsync();
 
             return orders;
+        }
+
+        public async Task<Transaction?> GetOrderByCode(string transactionCode)
+        {
+            return await _context.Transactions.FirstOrDefaultAsync(t => t.TransactionCode == transactionCode);
         }
 
         public async Task<List<Transaction>> GetOrdersForPaymentSummaryAsync(int buyerId, IReadOnlyList<int> orderIds)

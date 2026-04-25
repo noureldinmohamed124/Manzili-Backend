@@ -15,6 +15,7 @@ namespace Manzili.Application.Queries.Orders.GetAllOrders
     public class OrderItemDto
     {
         public int Id { get; set; }
+        public string OrderCode { get; set; } = string.Empty;
         public string ServiceName { get; set; } = string.Empty;
         public string CustomizationDetails { get; set; } = string.Empty;
         public decimal TotalPrice { get; set; }
