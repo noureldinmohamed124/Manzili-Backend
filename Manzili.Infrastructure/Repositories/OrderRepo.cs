@@ -60,6 +60,14 @@ namespace Manzili.Infrastructure.Repositories
             return await _context.Transactions.FirstOrDefaultAsync(t => t.TransactionCode == transactionCode);
         }
 
+        // for Submit Payment
+        public async Task<List<Transaction>> GetOrdersForPaymentAsync(int buyerId, IReadOnlyList<int> orderIds)
+        {
+            return await _context.Transactions
+                .Where(t => t.BuyerId == buyerId && orderIds.Contains(t.Id))
+                .ToListAsync();
+        }
+
         public async Task<List<Transaction>> GetOrdersForPaymentSummaryAsync(int buyerId, IReadOnlyList<int> orderIds)
         {
             return await _context.Transactions

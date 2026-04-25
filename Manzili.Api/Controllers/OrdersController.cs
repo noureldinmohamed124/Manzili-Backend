@@ -1,6 +1,7 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Orders;
 using Manzili.Application.Commands.Orders;
+using Manzili.Application.Commands.Orders.SubmitPayment;
 using Manzili.Application.Queries.Orders.GetAllOrders;
 using Manzili.Application.Queries.Orders.GetPaymentSummary;
 using Manzili.Application.UseCases.Orders;
@@ -16,12 +17,14 @@ namespace Manzili.Api.Controllers
         private readonly RequestServiceUseCase _requestServiceUseCase;
         private readonly GetAllOrdersUseCase _getAllOrdersUseCase;
         private readonly GetPaymentSummaryUseCase _getPaymentSummaryUseCase;
+        private readonly SubmitPaymentUseCase _submitPaymentUseCase;
 
-        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase, GetPaymentSummaryUseCase getPaymentSummaryUseCase)
+        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase, GetPaymentSummaryUseCase getPaymentSummaryUseCase, SubmitPaymentUseCase submitPaymentUseCase)
         {
             _requestServiceUseCase = requestServiceUseCase;
             _getAllOrdersUseCase = getAllOrdersUseCase;
             _getPaymentSummaryUseCase = getPaymentSummaryUseCase;
+            _submitPaymentUseCase = submitPaymentUseCase;
         }
 
 
@@ -66,6 +69,7 @@ namespace Manzili.Api.Controllers
         }
 
 
+        // get the payment summary before procced to payment screen
         [HttpGet("payment-summary")]
         public async Task<IActionResult> GetOrderPaymentSummary(GetPaymentSummaryRequestDto dto)
         {
@@ -75,6 +79,22 @@ namespace Manzili.Api.Controllers
             var summary = await _getPaymentSummaryUseCase.ExecuteAsync(query);
             return OkResponse(summary);
         }
+
+
+        // submit payment
+        [HttpPost("submit-payment")]
+        public async Task<IActionResult> SubmitPayment(SubmitPaymentRequestDto dto)
+        {
+            var command = new SubmitPaymentCommand(
+                OrderIds: dto.OrderIds,
+                PaymentScreenshot: dto.PaymentScreenshot,
+                Notes: dto.Notes
+            );
+            var result = await _submitPaymentUseCase.ExecuteAsync(command);
+            return OkResponse(result);
+        }
+
+
         //// accept the service request from the buyer
         //[HttpPost("accept")]
         //public async Task<IActionResult> AcceptTheOrder()
