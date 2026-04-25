@@ -1,12 +1,14 @@
 ﻿using Manzili.Api.Middlewares;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
+using Manzili.Application.Common.Interfaces;
 using Manzili.Application.UseCases.Auth;
 using Manzili.Application.UseCases.Orders;
 using Manzili.Application.UseCases.Services;
 using Manzili.Infrastructure.Persistence;
 using Manzili.Infrastructure.Repositories;
 using Manzili.Infrastructure.Security;
+using Manzili.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -34,6 +36,7 @@ builder.Services.AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
 builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
 builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddScoped<IServiceOptionRepo, ServiceOptionRepo>();
+builder.Services.AddScoped<IAddressRepo, AddressRepo>();
 
 
 
@@ -42,6 +45,8 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+builder.Services.AddScoped<ITransactionCodeGenerator, TransactionCodeGenerator>();
 
 builder.Services.AddLogging();
 builder.Services.AddHttpContextAccessor();
@@ -60,6 +65,7 @@ builder.Services.AddScoped<SearchServicesUseCase>();
 // Orders
 builder.Services.AddScoped<RequestServiceUseCase>();
 builder.Services.AddScoped<GetAllOrdersUseCase>();
+builder.Services.AddScoped<GetPaymentSummaryUseCase>();
 
 
 

@@ -8,12 +8,12 @@ namespace Manzili.Application.Queries.Orders.GetPaymentSummary
 {
     public class PaymentSummaryDto
     {
-        public List<ServiceItemDto> Services { get; set; } = [];
-        public AddressDto Address { get; set; } = null!;
+        public List<PaymentSummaryServiceItemDto> Services { get; set; } = [];
+        public PaymentSummaryAddressDto Address { get; set; } = null!;
         public PaymentBreakdownDto PriceBreakdown { get; set; } = null!;
     }
 
-    public class ServiceItemDto
+    public class PaymentSummaryServiceItemDto
     {
         public int OrderId { get; set; }
         public string Image { get; set; } = string.Empty;
@@ -21,15 +21,15 @@ namespace Manzili.Application.Queries.Orders.GetPaymentSummary
         public int Quantity { get; set; }
         public decimal Price { get; set; }
 
-        public List<OptionDto> Options { get; set; } = new List<OptionDto>();
+        public List<PaymentSummaryServiceOptionDto> Options { get; set; } = new List<PaymentSummaryServiceOptionDto>();
     }
-    public class OptionDto
+    public class PaymentSummaryServiceOptionDto
     {
         public string Name { get; set; } = string.Empty;
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
-    public class AddressDto
+    public class PaymentSummaryAddressDto
     {
         public string AddressPreview { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;

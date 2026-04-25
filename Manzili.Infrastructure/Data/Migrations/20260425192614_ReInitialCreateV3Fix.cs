@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Manzili.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ReInitialCreateV2Fix : Migration
+    public partial class ReInitialCreateV3Fix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -321,6 +321,7 @@ namespace Manzili.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TransactionCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CustomRequestText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     CustomRequestImage = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     RawPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -468,11 +469,16 @@ namespace Manzili.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_TransactionOptions", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_TransactionOptions_ServiceOptionGroups_ServiceOptionGroupId",
+                        column: x => x.ServiceOptionGroupId,
+                        principalTable: "ServiceOptionGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_TransactionOptions_ServiceOptions_ServiceOptionId",
                         column: x => x.ServiceOptionId,
                         principalTable: "ServiceOptions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TransactionOptions_Transactions_TransactionId",
                         column: x => x.TransactionId,
@@ -614,6 +620,11 @@ namespace Manzili.Infrastructure.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TransactionOptions_ServiceOptionGroupId",
+                table: "TransactionOptions",
+                column: "ServiceOptionGroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransactionOptions_ServiceOptionId",
                 table: "TransactionOptions",
                 column: "ServiceOptionId");
@@ -642,6 +653,11 @@ namespace Manzili.Infrastructure.Data.Migrations
                 name: "IX_Transactions_ServiceId",
                 table: "Transactions",
                 column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_TransactionCode",
+                table: "Transactions",
+                column: "TransactionCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_TransactionTypeId",

@@ -681,6 +681,10 @@ namespace Manzili.Infrastructure.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TransactionCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("TransactionTypeId")
                         .HasColumnType("int");
 
@@ -696,6 +700,8 @@ namespace Manzili.Infrastructure.Data.Migrations
                     b.HasIndex("ProviderId");
 
                     b.HasIndex("ServiceId");
+
+                    b.HasIndex("TransactionCode");
 
                     b.HasIndex("TransactionTypeId");
 
@@ -734,6 +740,8 @@ namespace Manzili.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ServiceOptionGroupId");
 
                     b.HasIndex("ServiceOptionId");
 
@@ -1050,10 +1058,16 @@ namespace Manzili.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Manzili.Domain.Entities.TransactionOption", b =>
                 {
+                    b.HasOne("Manzili.Domain.Entities.ServiceOptionGroup", "ServiceOptionGroup")
+                        .WithMany()
+                        .HasForeignKey("ServiceOptionGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Manzili.Domain.Entities.ServiceOption", "ServiceOption")
                         .WithMany()
                         .HasForeignKey("ServiceOptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Manzili.Domain.Entities.Transaction", "Transaction")
@@ -1063,6 +1077,8 @@ namespace Manzili.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ServiceOption");
+
+                    b.Navigation("ServiceOptionGroup");
 
                     b.Navigation("Transaction");
                 });

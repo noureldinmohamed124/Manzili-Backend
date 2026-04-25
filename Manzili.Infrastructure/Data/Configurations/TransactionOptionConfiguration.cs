@@ -32,6 +32,11 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.TransactionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(x => x.ServiceOption)
+                .WithMany()
+                .HasForeignKey(t => t.ServiceOptionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

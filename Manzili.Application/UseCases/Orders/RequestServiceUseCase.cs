@@ -2,6 +2,7 @@
 using Manzili.Application.Abstractions.Security;
 using Manzili.Application.Commands.Orders;
 using Manzili.Application.Common.Extensions;
+using Manzili.Application.Common.Interfaces;
 using Manzili.Application.Exceptions;
 using Manzili.Domain.Entities;
 using Manzili.Domain.Enums;
@@ -21,8 +22,9 @@ namespace Manzili.Application.UseCases.Orders
         private readonly IServiceOptionRepo _optionRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ITransactionCodeGenerator _transactionCodeGenerator;
 
-        public RequestServiceUseCase(IServiceRepo serviceRepo, IOrderRepo orderRepo, IUserRepo userRepo, IServiceOptionRepo optionRepo, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
+        public RequestServiceUseCase(IServiceRepo serviceRepo, IOrderRepo orderRepo, IUserRepo userRepo, IServiceOptionRepo optionRepo, IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ITransactionCodeGenerator transactionCodeGenerator)
         {
             _serviceRepo = serviceRepo;
             _orderRepo = orderRepo;
@@ -30,6 +32,7 @@ namespace Manzili.Application.UseCases.Orders
             _optionRepo = optionRepo;
             _unitOfWork = unitOfWork;
             _currentUserService = currentUserService;
+            _transactionCodeGenerator = transactionCodeGenerator;
         }
 
         public async Task<int> ExecuteAsync(RequestServiceCommand command)
@@ -86,6 +89,9 @@ namespace Manzili.Application.UseCases.Orders
             await _orderRepo.AddAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 
+            transaction.TransactionCode = _transactionCodeGenerator.GenerateOrderCode(transaction.Id);
+
+            await _unitOfWork.SaveChangesAsync();
             return transaction.Id;
         }
 

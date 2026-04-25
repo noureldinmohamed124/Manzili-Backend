@@ -13,6 +13,9 @@ namespace Manzili.Application.Common.Extensions
         public static int ToId(this TransactionStatus status)
         => (int)status;
 
+        public static int ToId(this OrderTransactionTypeEnum status)
+        => (int)status;
+
         public static string OrderToString(this OrderTransactionTypeEnum status)
             => status.ToString();
 

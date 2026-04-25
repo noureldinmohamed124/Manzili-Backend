@@ -53,5 +53,14 @@ namespace Manzili.Infrastructure.Repositories
 
             return orders;
         }
+
+        public async Task<List<Transaction>> GetOrdersForPaymentSummaryAsync(int buyerId, IReadOnlyList<int> orderIds)
+        {
+            return await _context.Transactions
+                .Include(t => t.Service).ThenInclude(s => s!.ServiceImages)
+                .Include(t => t.TransactionOptions)
+                .Where(t => t.BuyerId == buyerId && orderIds.Contains(t.Id))
+                .ToListAsync();
+        }
     }
 }

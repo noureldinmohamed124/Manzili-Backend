@@ -9,6 +9,7 @@ namespace Manzili.Domain.Entities
     public class Transaction
     {
         public int Id { get; set; }
+        public string TransactionCode { get; set; } = string.Empty;
         public string CustomRequestText { get; set; } = string.Empty;
         public string? CustomRequestImage { get; set; }
         public decimal RawPrice { get; set; }

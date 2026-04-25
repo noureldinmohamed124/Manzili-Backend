@@ -2,6 +2,7 @@
 using Manzili.Api.DTOs.Orders;
 using Manzili.Application.Commands.Orders;
 using Manzili.Application.Queries.Orders.GetAllOrders;
+using Manzili.Application.Queries.Orders.GetPaymentSummary;
 using Manzili.Application.UseCases.Orders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,16 +15,18 @@ namespace Manzili.Api.Controllers
     {
         private readonly RequestServiceUseCase _requestServiceUseCase;
         private readonly GetAllOrdersUseCase _getAllOrdersUseCase;
+        private readonly GetPaymentSummaryUseCase _getPaymentSummaryUseCase;
 
-        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase)
+        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase, GetPaymentSummaryUseCase getPaymentSummaryUseCase)
         {
             _requestServiceUseCase = requestServiceUseCase;
             _getAllOrdersUseCase = getAllOrdersUseCase;
+            _getPaymentSummaryUseCase = getPaymentSummaryUseCase;
         }
 
 
         // by the buyer to get the approved requests from the seller (waiting for payment)
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery]GetOrdersRequestDto dto)
         {
             var command = new GetOrdersQuery(
@@ -63,6 +66,15 @@ namespace Manzili.Api.Controllers
         }
 
 
+        [HttpGet("payment-summary")]
+        public async Task<IActionResult> GetOrderPaymentSummary(GetPaymentSummaryRequestDto dto)
+        {
+            var query = new GetPaymentSummaryQuery(
+                OrderIds: dto.OrderIds
+            );
+            var summary = await _getPaymentSummaryUseCase.ExecuteAsync(query);
+            return OkResponse(summary);
+        }
         //// accept the service request from the buyer
         //[HttpPost("accept")]
         //public async Task<IActionResult> AcceptTheOrder()

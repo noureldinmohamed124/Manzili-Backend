@@ -17,13 +17,15 @@ namespace Manzili.Infrastructure.Persistence.Configurations
 
             builder.HasKey(x => x.Id);
 
+            builder.HasIndex(x => x.TransactionCode);
+                //.IsUnique();
+
             builder.Property(x => x.CustomRequestText)
                 .HasMaxLength(2000);
 
             builder.Property(x => x.CustomRequestImage)
                 .HasMaxLength(2000)
                 .IsRequired(false);
-            
 
             builder.Property(x => x.RawPrice)
                 .HasPrecision(18, 2);
