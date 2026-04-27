@@ -75,7 +75,7 @@ namespace Manzili.Infrastructure.Repositories
         public async Task<PaginatedServiceListDto> GetAllPaginatedForListingAsync(GetServicesQuery q)
         {
             var baseQuery = _context.Services
-                .Where(s => s.Status.IsActive)
+                .Where(s => s.Status.IsActive && s.Provider.IsBlocked == false)
                 .AsNoTracking();
 
             var query = new ServiceQueryBuilder(baseQuery)
