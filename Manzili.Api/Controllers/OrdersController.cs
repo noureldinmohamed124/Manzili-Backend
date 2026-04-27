@@ -65,7 +65,7 @@ namespace Manzili.Api.Controllers
 
             var orderId = await _requestServiceUseCase.ExecuteAsync(command);
 
-            return OkResponse(orderId, Messages.Order.Created);
+            return OkResponse(new { orderId = orderId }, Messages.Order.Created);
         }
 
 
