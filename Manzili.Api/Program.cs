@@ -37,6 +37,7 @@ builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
 builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddScoped<IServiceOptionRepo, ServiceOptionRepo>();
 builder.Services.AddScoped<IAddressRepo, AddressRepo>();
+builder.Services.AddScoped<IPaymentProofRepo, PaymentProofRepo>();
 
 
 
@@ -66,6 +67,7 @@ builder.Services.AddScoped<SearchServicesUseCase>();
 builder.Services.AddScoped<RequestServiceUseCase>();
 builder.Services.AddScoped<GetAllOrdersUseCase>();
 builder.Services.AddScoped<GetPaymentSummaryUseCase>();
+builder.Services.AddScoped<SubmitPaymentUseCase>();
 
 
 

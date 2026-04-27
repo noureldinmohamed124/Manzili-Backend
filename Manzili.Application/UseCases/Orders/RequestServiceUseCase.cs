@@ -45,6 +45,7 @@ namespace Manzili.Application.UseCases.Orders
             
 
             decimal subtotal = 0;
+            decimal optionsPrice = 0;
             subtotal = service!.BasePrice;
 
             var transaction = new Transaction
@@ -75,7 +76,7 @@ namespace Manzili.Application.UseCases.Orders
                         ServiceOptionId = serviceOption.Id
                     });
 
-                    subtotal += (serviceOption.PriceAdjustment ?? 0) * optionItem.Quantity;
+                    optionsPrice += (serviceOption.PriceAdjustment ?? 0) * optionItem.Quantity;
                 }
             }
 
@@ -83,7 +84,7 @@ namespace Manzili.Application.UseCases.Orders
 
             transaction.RawPrice = subtotal;
             transaction.CashDiscount = cashDiscount;
-            transaction.TotalPrice = subtotal - cashDiscount;
+            transaction.TotalPrice = subtotal + optionsPrice - cashDiscount;
 
 
             await _orderRepo.AddAsync(transaction);

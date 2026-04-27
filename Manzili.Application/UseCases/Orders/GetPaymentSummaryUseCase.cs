@@ -38,7 +38,10 @@ namespace Manzili.Application.UseCases.Orders
             if (orders.Any(o => o.TransactionTypeId != OrderTransactionTypeEnum.Accepted.ToId()))
                 throw new BusinessRuleException("Only Accepted Orders can be Paid");
 
-            decimal subTotal = orders.Sum(o => o.TotalPrice);
+            decimal subTotal = orders.Sum(o => o.RawPrice);
+            Console.WriteLine($"Subtotal of all Orders (Raw price of all) : {subTotal}");
+
+
             decimal deliveryFees = 40m;
             
             var address = await _addressRepo.GetByIdAsync(buyerId);
@@ -52,7 +55,7 @@ namespace Manzili.Application.UseCases.Orders
                 Image = o.Service!.ServiceImages.FirstOrDefault()!.ImageUrl,
                 Title = o.Service.Title,
                 Quantity = 1,
-                Price = o.TotalPrice,
+                Price = o.RawPrice,
 
                 Options = o.TransactionOptions.Select(op => new PaymentSummaryServiceOptionDto
                 {
@@ -64,11 +67,15 @@ namespace Manzili.Application.UseCases.Orders
             }).ToList();
 
             decimal optionsPrice = 0m;
-            foreach(var option in pServices)
+            int c = 1;
+            foreach(var service in pServices)
             {
-                optionsPrice += option.Options.Sum(o => o.Price * o.Quantity);
+                optionsPrice += service.Options.Sum(o => (o.Price * o.Quantity));
+                Console.WriteLine($"Service '{c}' Options Price: {optionsPrice}");
+                c++;
             }
             subTotal += optionsPrice;
+            Console.WriteLine($"SubTotal after Options Price : {subTotal}");
 
             var pAddress = new PaymentSummaryAddressDto
             {

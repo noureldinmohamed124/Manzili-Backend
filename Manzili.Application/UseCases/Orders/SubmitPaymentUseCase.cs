@@ -59,12 +59,13 @@ namespace Manzili.Application.UseCases.Orders
             await _paymentProofRepo.AddAsync(paymentProof);
 
             decimal total = orders.Sum(o => o.TotalPrice);
+            decimal deliveryFees = 40m;
 
             var paymentSuccessDto = new PaymentSuccessDto
             {
                 OrderNo = string.Join(",", orders.Select(o => o.Id)),
                 PaymentDate = DateTime.UtcNow,
-                Total = total,
+                Total = total + deliveryFees,
             };
             
             return paymentSuccessDto;
