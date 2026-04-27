@@ -1,8 +1,8 @@
 ﻿using Manzili.Api.DTOs.Auth;
+using Manzili.Application.Auth.UseCases;
 using Manzili.Application.Commands.Auth.LoginUser;
 using Manzili.Application.Commands.Auth.RefreshToken;
 using Manzili.Application.Commands.Auth.RegisterUserCommand;
-using Manzili.Application.UseCases.Auth;
 using Manzili.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

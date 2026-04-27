@@ -1,5 +1,5 @@
-﻿using Manzili.Application.Common.Enums;
-using Manzili.Application.Queries.Orders.GetAllOrders;
+﻿using Manzili.Application.Buyer.Queries.Orders.GetAllOrders;
+using Manzili.Application.Common.Enums;
 using Manzili.Domain.Entities;
 using System;
 using System.Collections.Generic;

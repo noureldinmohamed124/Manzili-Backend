@@ -1,6 +1,6 @@
-﻿using Manzili.Application.Queries.Services.GetPaginatedServices;
-using Manzili.Application.Queries.Services.GetServiceByName;
-using Manzili.Application.Queries.Services.GetServiceDetails;
+﻿using Manzili.Application.Buyer.Queries.Services.GetPaginatedServices;
+using Manzili.Application.Buyer.Queries.Services.GetServiceByName;
+using Manzili.Application.Buyer.Queries.Services.GetServiceDetails;
 using Manzili.Domain.Entities;
 using System;
 using System.Collections.Generic;

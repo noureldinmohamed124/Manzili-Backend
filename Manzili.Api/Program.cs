@@ -1,10 +1,10 @@
 ﻿using Manzili.Api.Middlewares;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
+using Manzili.Application.Buyer.UseCases.Auth;
+using Manzili.Application.Buyer.UseCases.Orders;
+using Manzili.Application.Buyer.UseCases.Services;
 using Manzili.Application.Common.Interfaces;
-using Manzili.Application.UseCases.Auth;
-using Manzili.Application.UseCases.Orders;
-using Manzili.Application.UseCases.Services;
 using Manzili.Infrastructure.Persistence;
 using Manzili.Infrastructure.Repositories;
 using Manzili.Infrastructure.Security;

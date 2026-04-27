@@ -1,7 +1,7 @@
 ﻿using Manzili.Application.Abstractions.Persistence;
+using Manzili.Application.Buyer.Queries.Orders.GetAllOrders;
 using Manzili.Application.Common.Enums;
 using Manzili.Application.Common.Extensions;
-using Manzili.Application.Queries.Orders.GetAllOrders;
 using Manzili.Domain.Entities;
 using Manzili.Domain.Enums;
 using Manzili.Infrastructure.Persistence;
