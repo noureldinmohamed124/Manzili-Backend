@@ -1,10 +1,11 @@
 ﻿using Manzili.Api.Middlewares;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
-using Manzili.Application.Buyer.UseCases.Auth;
+using Manzili.Application.Auth.UseCases;
 using Manzili.Application.Buyer.UseCases.Orders;
 using Manzili.Application.Buyer.UseCases.Services;
 using Manzili.Application.Common.Interfaces;
+using Manzili.Application.Seller.UseCases;
 using Manzili.Infrastructure.Persistence;
 using Manzili.Infrastructure.Repositories;
 using Manzili.Infrastructure.Security;
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddScoped<IServiceOptionRepo, ServiceOptionRepo>();
 builder.Services.AddScoped<IAddressRepo, AddressRepo>();
 builder.Services.AddScoped<IPaymentProofRepo, PaymentProofRepo>();
+builder.Services.AddScoped<ISellerRepo, SellerRepo>();
 
 
 
@@ -68,6 +70,9 @@ builder.Services.AddScoped<RequestServiceUseCase>();
 builder.Services.AddScoped<GetAllOrdersUseCase>();
 builder.Services.AddScoped<GetPaymentSummaryUseCase>();
 builder.Services.AddScoped<SubmitPaymentUseCase>();
+// Seller Actions
+builder.Services.AddScoped<GetDashboardStatsUseCase>();
+
 
 
 

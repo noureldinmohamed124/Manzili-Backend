@@ -1,11 +1,10 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Orders;
+using Manzili.Application.Buyer.Commands.Orders;
+using Manzili.Application.Buyer.Commands.Orders.SubmitPayment;
+using Manzili.Application.Buyer.Queries.Orders.GetAllOrders;
+using Manzili.Application.Buyer.Queries.Orders.GetPaymentSummary;
 using Manzili.Application.Buyer.UseCases.Orders;
-using Manzili.Application.Commands.Orders;
-using Manzili.Application.Commands.Orders.SubmitPayment;
-using Manzili.Application.Queries.Orders.GetAllOrders;
-using Manzili.Application.Queries.Orders.GetPaymentSummary;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manzili.Api.Controllers

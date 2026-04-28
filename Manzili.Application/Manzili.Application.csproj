@@ -11,14 +11,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Buyer\Commands\Services\" />
-    <Folder Include="Buyer\Commands\Users\" />
+    <Folder Include="Admin\Commands\" />
+    <Folder Include="Admin\Queries\" />
+    <Folder Include="Admin\UseCases\" />
+    <Folder Include="Auth\Queries\" />
     <Folder Include="Events\" />
-    <Folder Include="Admin\" />
-    <Folder Include="Auth\" />
-    <Folder Include="Profile\" />
-    <Folder Include="Seller\" />
-    <Folder Include="Buyer\UseCases\Transactions\" />
+    <Folder Include="Profile\Commands\" />
+    <Folder Include="Profile\Queries\" />
+    <Folder Include="Profile\UseCases\" />
+    <Folder Include="Seller\Commands\" />
   </ItemGroup>
 
 </Project>

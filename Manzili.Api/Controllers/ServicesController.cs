@@ -1,10 +1,9 @@
 ﻿using Manzili.Api.DTOs.Services;
+using Manzili.Application.Buyer.Queries.Services.GetPaginatedServices;
+using Manzili.Application.Buyer.Queries.Services.GetServiceByName;
+using Manzili.Application.Buyer.Queries.Services.GetServiceDetails;
 using Manzili.Application.Buyer.UseCases.Services;
-using Manzili.Application.Queries.Services.GetPaginatedServices;
-using Manzili.Application.Queries.Services.GetServiceByName;
-using Manzili.Application.Queries.Services.GetServiceDetails;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manzili.Api.Controllers
