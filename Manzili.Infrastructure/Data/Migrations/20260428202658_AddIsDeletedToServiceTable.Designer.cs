@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manzili.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ManziliDbContext))]
-    [Migration("20260425192614_ReInitialCreateV3Fix")]
-    partial class ReInitialCreateV3Fix
+    [Migration("20260428202658_AddIsDeletedToServiceTable")]
+    partial class AddIsDeletedToServiceTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,6 +182,44 @@ namespace Manzili.Infrastructure.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications", (string)null);
+                });
+
+            modelBuilder.Entity("Manzili.Domain.Entities.PaymentProof", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsVerified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ScreenshotUrl")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("VerifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VerifiedByAdminId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentProofs");
                 });
 
             modelBuilder.Entity("Manzili.Domain.Entities.Promotion", b =>
@@ -428,6 +466,9 @@ namespace Manzili.Infrastructure.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
 
@@ -660,6 +701,9 @@ namespace Manzili.Infrastructure.Data.Migrations
                     b.Property<int?>("ParentTransactionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PaymentProofId")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("ProposedPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -700,11 +744,14 @@ namespace Manzili.Infrastructure.Data.Migrations
 
                     b.HasIndex("ParentTransactionId");
 
+                    b.HasIndex("PaymentProofId");
+
                     b.HasIndex("ProviderId");
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("TransactionCode");
+                    b.HasIndex("TransactionCode")
+                        .IsUnique();
 
                     b.HasIndex("TransactionTypeId");
 
@@ -1031,6 +1078,11 @@ namespace Manzili.Infrastructure.Data.Migrations
                         .HasForeignKey("ParentTransactionId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Manzili.Domain.Entities.PaymentProof", "PaymentProof")
+                        .WithMany("Transactions")
+                        .HasForeignKey("PaymentProofId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Manzili.Domain.Entities.User", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderId")
@@ -1051,6 +1103,8 @@ namespace Manzili.Infrastructure.Data.Migrations
                     b.Navigation("Buyer");
 
                     b.Navigation("ParentTransaction");
+
+                    b.Navigation("PaymentProof");
 
                     b.Navigation("Provider");
 
@@ -1091,6 +1145,11 @@ namespace Manzili.Infrastructure.Data.Migrations
                     b.Navigation("ChildCategories");
 
                     b.Navigation("Services");
+                });
+
+            modelBuilder.Entity("Manzili.Domain.Entities.PaymentProof", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Manzili.Domain.Entities.Promotion", b =>
@@ -1141,8 +1200,7 @@ namespace Manzili.Infrastructure.Data.Migrations
 
                     b.Navigation("Promotions");
 
-                    b.Navigation("ProviderAnalytics")
-                        .IsRequired();
+                    b.Navigation("ProviderAnalytics");
 
                     b.Navigation("RefreshTokens");
 

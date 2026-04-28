@@ -2,6 +2,8 @@
 using Manzili.Application.Buyer.Queries.Services.GetPaginatedServices;
 using Manzili.Application.Buyer.Queries.Services.GetServiceByName;
 using Manzili.Application.Buyer.Queries.Services.GetServiceDetails;
+using Manzili.Application.Seller.Queries.Services.GetAllSellerServices;
+using Manzili.Application.Seller.Queries.Services.GetSellerServiceById;
 using Manzili.Domain.Entities;
 using Manzili.Infrastructure.Data.QueryExtensions;
 using Manzili.Infrastructure.Persistence;
@@ -206,6 +208,94 @@ namespace Manzili.Infrastructure.Repositories
             };
         }
 
-        
+
+        // For Seller
+        public async Task<SellerServicesListDto> GetSellerServicesAsync(int sellerId, GetSellerServicesQuery query)
+        {
+            var _query = _context.Services
+                .AsNoTracking()
+                .Where(s => s.ProviderId == sellerId)
+                .AsQueryable();
+
+            var ser = await _context.Services.ToListAsync();
+            Console.WriteLine("Services Count is : " + ser.Count());
+
+            if (query.Status != null)
+            {
+                _query = _query.Where(s => s.StatusId == (int)query.Status);
+            }
+
+            if (query.Page <= 0)
+                query.Page = 1;
+
+            if (query.PageSize <= 0)
+                query.PageSize = 10;
+
+            int skip = (query.Page - 1) * query.PageSize;
+
+            var services = await _query
+                .OrderByDescending(s => s.CreatedAt)
+                .Skip(skip)
+                .Take(query.PageSize)
+                .Select(s => new SellerServiceItemDto
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Image = s.ServiceImages.Select(s => s.ImageUrl).FirstOrDefault() ?? string.Empty,
+                    Category = s.Category.NameAr,
+                    BasePrice = s.BasePrice,
+                    CreatedAt = s.CreatedAt,
+                    Rating = 0,
+                    Status = s.Status.Name,
+                    OrdersCount = s.Transactions.Count(),
+                }).ToListAsync();
+
+            return new SellerServicesListDto
+            {
+                Items = services
+            };
+        }
+
+        public async Task<SellerServiceDetailsDto?> GetSellerServiceByIdAsync(int sellerId, int serviceId)
+        {
+            var service = await _context.Services
+                .AsNoTracking()
+                .Where(s =>
+                    s.Id == serviceId &&
+                    s.ProviderId == sellerId)
+                .Select(s => new SellerServiceDetailsDto
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Description = s.ServiceDescription,
+                    BasePrice = s.BasePrice,
+                    Category = s.Category.NameAr,
+                    Status = s.Status.Name,
+                    CreatedAt = s.CreatedAt,
+                    Rating = 0,
+                    OrdersCount = s.Transactions.Count(),
+                    Images = s.ServiceImages
+                        .Select(i => i.ImageUrl)
+                        .ToList(),
+
+                    OptionGroups = s.OptionGroups
+                        .Select(g => new ServiceOptionGroupDto
+                        {
+                            Id = g.Id,
+                            Name = g.Name,
+                            IsRequired = g.IsRequired,
+                            Options = g.Options
+                                .Select(o => new ServiceOptionDto
+                                {
+                                    Id = o.Id,
+                                    Name = o.ServiceOptionName,
+                                    Price = o.PriceAdjustment ?? 0
+                                }).ToList()
+                        }).ToList()
+                }).FirstOrDefaultAsync();
+
+            return service;
+        }
+
     }
 }

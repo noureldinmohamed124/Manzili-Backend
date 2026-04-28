@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Manzili.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ReInitialCreateV3Fix : Migration
+    public partial class ReInitialCreateV4Fix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,6 +33,24 @@ namespace Manzili.Infrastructure.Data.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentProofs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ScreenshotUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    VerifiedByAdminId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentProofs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -336,11 +354,18 @@ namespace Manzili.Infrastructure.Data.Migrations
                     ProviderId = table.Column<int>(type: "int", nullable: false),
                     TransactionTypeId = table.Column<int>(type: "int", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: true),
-                    ParentTransactionId = table.Column<int>(type: "int", nullable: true)
+                    ParentTransactionId = table.Column<int>(type: "int", nullable: true),
+                    PaymentProofId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_PaymentProofs_PaymentProofId",
+                        column: x => x.PaymentProofId,
+                        principalTable: "PaymentProofs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Transactions_Services_ServiceId",
                         column: x => x.ServiceId,
@@ -645,6 +670,11 @@ namespace Manzili.Infrastructure.Data.Migrations
                 column: "ParentTransactionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_PaymentProofId",
+                table: "Transactions",
+                column: "PaymentProofId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_ProviderId",
                 table: "Transactions",
                 column: "ProviderId");
@@ -657,7 +687,8 @@ namespace Manzili.Infrastructure.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_TransactionCode",
                 table: "Transactions",
-                column: "TransactionCode");
+                column: "TransactionCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_TransactionTypeId",
@@ -715,6 +746,9 @@ namespace Manzili.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ServiceOptionGroups");
+
+            migrationBuilder.DropTable(
+                name: "PaymentProofs");
 
             migrationBuilder.DropTable(
                 name: "TransactionTypes");

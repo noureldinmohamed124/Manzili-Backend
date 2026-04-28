@@ -49,7 +49,7 @@ namespace Manzili.Domain.Entities
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
         public ICollection<PromotionUsage> PromotionUsages { get; set; } = new List<PromotionUsage>();
 
-        public ProviderAnalytics ProviderAnalytics { get; set; } = null!;
+        public ProviderAnalytics? ProviderAnalytics { get; set; } = null!;
 
     }
 }

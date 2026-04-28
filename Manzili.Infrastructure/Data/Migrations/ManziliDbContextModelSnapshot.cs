@@ -463,6 +463,9 @@ namespace Manzili.Infrastructure.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
 
@@ -1194,8 +1197,7 @@ namespace Manzili.Infrastructure.Data.Migrations
 
                     b.Navigation("Promotions");
 
-                    b.Navigation("ProviderAnalytics")
-                        .IsRequired();
+                    b.Navigation("ProviderAnalytics");
 
                     b.Navigation("RefreshTokens");
 

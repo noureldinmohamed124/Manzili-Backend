@@ -5,12 +5,14 @@ using Manzili.Application.Buyer.Commands.Orders.SubmitPayment;
 using Manzili.Application.Buyer.Queries.Orders.GetAllOrders;
 using Manzili.Application.Buyer.Queries.Orders.GetPaymentSummary;
 using Manzili.Application.Buyer.UseCases.Orders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manzili.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Provider")]
     public class OrdersController : BaseApiController
     {
         private readonly RequestServiceUseCase _requestServiceUseCase;

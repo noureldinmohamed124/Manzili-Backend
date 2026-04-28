@@ -99,21 +99,6 @@ namespace Manzili.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            //builder.HasOne(x => x.Category)
-            //    .WithMany(c => c.Services)
-            //    .HasForeignKey(x => x.CategoryId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasOne(x => x.Provider)
-            //    .WithMany(u => u.Services)
-            //    .HasForeignKey(x => x.ProviderId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasOne(x => x.Status)
-            //    .WithMany(s => s.Services)
-            //    .HasForeignKey(x => x.StatusId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
 
         }
     }

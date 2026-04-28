@@ -46,7 +46,7 @@ namespace Manzili.Domain.Entities
 
         // Relation with Service (Optional)
         public int? ServiceId { get; set; }
-        public Service? Service { get; set; }
+        public Service? Service { get; set; } = null!;
 
         // Relation on itself
         public int? ParentTransactionId { get; set; }

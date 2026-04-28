@@ -16,10 +16,9 @@
     <Folder Include="Admin\UseCases\" />
     <Folder Include="Auth\Queries\" />
     <Folder Include="Events\" />
-    <Folder Include="Profile\Commands\" />
-    <Folder Include="Profile\Queries\" />
-    <Folder Include="Profile\UseCases\" />
-    <Folder Include="Seller\Commands\" />
+    <Folder Include="Shared\Commands\" />
+    <Folder Include="Seller\Commands\Services\DeleteService\" />
+    <Folder Include="Seller\Commands\Services\UpdateService\" />
   </ItemGroup>
 
 </Project>

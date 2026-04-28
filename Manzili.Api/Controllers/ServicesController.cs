@@ -10,6 +10,7 @@ namespace Manzili.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Provider")]
     public class ServicesController : BaseApiController
     {
         private readonly GetHomeSectionUseCase _getHomeSectionUseCase;
@@ -29,8 +30,6 @@ namespace Manzili.Api.Controllers
 
         // Get All Services - The whole Home Section
         [HttpGet("home/{no}")]
-        [AllowAnonymous]
-        [Authorize(Roles = "Provider,Buyer")]
         public async Task<IActionResult> GetHomeSection(int no)
         {
             var services = await _getHomeSectionUseCase.ExecuteAsync(no);
@@ -39,8 +38,6 @@ namespace Manzili.Api.Controllers
 
         // Get All Services
         [HttpGet]
-        [AllowAnonymous]
-        [Authorize(Roles = "Provider,Buyer")]
         public async Task<IActionResult> GetAllServicesPaginated([FromQuery] GetServicesRequestDto dto)
         {
             var query = new GetServicesQuery
@@ -57,8 +54,6 @@ namespace Manzili.Api.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [AllowAnonymous]
-        [Authorize(Roles = "Provider,Buyer")]
         public async Task<IActionResult> GetServiceById(int id)
         {
             var query = new GetServiceDetailsQuery(ServiceId: id);
@@ -68,7 +63,6 @@ namespace Manzili.Api.Controllers
         }
 
         [HttpGet("search")]
-        [AllowAnonymous]
         public async Task<IActionResult> SearchServiceByName([FromQuery] SearchServicesByNameRequestDto dto)
         {
             var query = new SearchServicesQuery(

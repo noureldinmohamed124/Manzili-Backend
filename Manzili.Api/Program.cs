@@ -6,6 +6,7 @@ using Manzili.Application.Buyer.UseCases.Orders;
 using Manzili.Application.Buyer.UseCases.Services;
 using Manzili.Application.Common.Interfaces;
 using Manzili.Application.Seller.UseCases;
+using Manzili.Application.Shared.UseCases;
 using Manzili.Infrastructure.Persistence;
 using Manzili.Infrastructure.Repositories;
 using Manzili.Infrastructure.Security;
@@ -26,7 +27,7 @@ builder.Services.AddControllers();
 
 // 1. DbContext
 builder.Services.AddDbContext<ManziliDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Home")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AspTest")));
 
 
 // 2. Repositories
@@ -40,6 +41,7 @@ builder.Services.AddScoped<IServiceOptionRepo, ServiceOptionRepo>();
 builder.Services.AddScoped<IAddressRepo, AddressRepo>();
 builder.Services.AddScoped<IPaymentProofRepo, PaymentProofRepo>();
 builder.Services.AddScoped<ISellerRepo, SellerRepo>();
+builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
 
 
 
@@ -60,6 +62,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<RegisterUserUseCase>();
 builder.Services.AddScoped<LoginUserUseCase>();
 builder.Services.AddScoped<RefreshTokenUseCase>();
+// Categories
+builder.Services.AddScoped<GetAllCategoriesUseCase>();
 // Services
 builder.Services.AddScoped<GetAllServicesUseCase>();
 builder.Services.AddScoped<GetServiceUseCase>();
@@ -72,6 +76,9 @@ builder.Services.AddScoped<GetPaymentSummaryUseCase>();
 builder.Services.AddScoped<SubmitPaymentUseCase>();
 // Seller Actions
 builder.Services.AddScoped<GetDashboardStatsUseCase>();
+builder.Services.AddScoped<GetSellerServicesUseCase>();
+builder.Services.AddScoped<GetSellerServiceByIdUseCase>();
+builder.Services.AddScoped<CreateServiceUseCase>();
 
 
 

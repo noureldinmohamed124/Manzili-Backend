@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manzili.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ManziliDbContext))]
-    [Migration("20260425221906_AddPaymentProofTable")]
-    partial class AddPaymentProofTable
+    [Migration("20260428185013_ReInitialCreateV4Fix")]
+    partial class ReInitialCreateV4Fix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1197,8 +1197,7 @@ namespace Manzili.Infrastructure.Data.Migrations
 
                     b.Navigation("Promotions");
 
-                    b.Navigation("ProviderAnalytics")
-                        .IsRequired();
+                    b.Navigation("ProviderAnalytics");
 
                     b.Navigation("RefreshTokens");
 

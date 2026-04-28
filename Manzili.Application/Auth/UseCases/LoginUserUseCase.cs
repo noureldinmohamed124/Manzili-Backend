@@ -45,6 +45,7 @@ namespace Manzili.Application.Auth.UseCases
             if (!_passwordHasher.VerifyPassword(command.Password, user.PasswordHash))
                 throw new UnauthorizedException("Invalid email or password");
 
+
             // Generate tokens
             var accessToken = _jwtTokenService.GenerateToken(user);
             var existedRefreshToken = await _refreshTokenRepo.GetByUserIdAsync(user.Id);
@@ -72,7 +73,8 @@ namespace Manzili.Application.Auth.UseCases
             return new AuthTokenDto
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                Role = user.Role
             };
         }
 

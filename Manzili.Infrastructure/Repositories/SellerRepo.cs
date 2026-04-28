@@ -63,5 +63,7 @@ namespace Manzili.Infrastructure.Repositories
                 AverageRating = Math.Round(averageRating, 1)
             };
         }
+
+
     }
 }

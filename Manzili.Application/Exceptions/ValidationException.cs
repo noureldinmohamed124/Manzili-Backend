@@ -8,11 +8,17 @@ namespace Manzili.Application.Exceptions
 {
     public sealed class ValidationException : AppException
     {
-        public IReadOnlyDictionary<string, string[]> Errors { get; }
+        public Dictionary<string, string[]> Errors { get; set; }
 
-        public ValidationException(IReadOnlyDictionary<string, string[]> errors, string message = "Validation failed") : base(message)
+        public ValidationException(Dictionary<string, string[]> errors, string message = "Validation failed") : base(message)
         {
             Errors = errors;
+        }
+
+        public ValidationException(string message) : base(message)
+        {
+            Errors = new Dictionary<string, string[]>();
+            Errors.Add("Error 1" , [message]);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manzili.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Manzili.Application.Auth.Commands
     {
         public string AccessToken { get; set; } = null!;
         public string? RefreshToken { get; set; }
+        public UserRole Role { get; set; }
     }
 }
