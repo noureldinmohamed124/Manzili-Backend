@@ -12,7 +12,7 @@ namespace Manzili.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Provider")]
+    [Authorize(Roles = "Buyer")]
     public class OrdersController : BaseApiController
     {
         private readonly RequestServiceUseCase _requestServiceUseCase;

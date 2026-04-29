@@ -1,4 +1,5 @@
 ﻿using Manzili.Api.Middlewares;
+using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
 using Manzili.Application.Auth.UseCases;
@@ -7,6 +8,7 @@ using Manzili.Application.Buyer.UseCases.Services;
 using Manzili.Application.Common.Interfaces;
 using Manzili.Application.Seller.UseCases;
 using Manzili.Application.Shared.UseCases;
+using Manzili.Infrastructure.FileStorage;
 using Manzili.Infrastructure.Persistence;
 using Manzili.Infrastructure.Repositories;
 using Manzili.Infrastructure.Security;
@@ -53,6 +55,8 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddScoped<ITransactionCodeGenerator, TransactionCodeGenerator>();
 
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
 builder.Services.AddLogging();
 builder.Services.AddHttpContextAccessor();
 
@@ -79,6 +83,7 @@ builder.Services.AddScoped<GetDashboardStatsUseCase>();
 builder.Services.AddScoped<GetSellerServicesUseCase>();
 builder.Services.AddScoped<GetSellerServiceByIdUseCase>();
 builder.Services.AddScoped<CreateServiceUseCase>();
+builder.Services.AddScoped<UpdateServiceUseCase>();
 
 
 
@@ -142,6 +147,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();

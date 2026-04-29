@@ -17,6 +17,17 @@ namespace Manzili.Infrastructure.Repositories
         {
         }
 
+        public async Task<bool> ExistsAsync(int categoryId)
+        {
+            var cat = await _context.Services.FindAsync(categoryId);
+
+            bool exists = false;
+            if (cat != null)
+                exists = true;
+
+            return exists;
+        }
+
         public async Task<CategoriesListDto> GetAllCategoriesAsync()
         {
             var categories = await _context.Categories
@@ -37,5 +48,6 @@ namespace Manzili.Infrastructure.Repositories
 
             return categoriesList;
         }
+
     }
 }

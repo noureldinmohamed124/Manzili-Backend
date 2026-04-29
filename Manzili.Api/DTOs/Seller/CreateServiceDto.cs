@@ -12,7 +12,7 @@ namespace Manzili.Api.DTOs.Seller
         public string Description { get; set; } = string.Empty;
         public int CategoryId { get; set; }
         public decimal BasePrice { get; set; }
-        public List<string> Images { get; set; } = new List<string>();
+        public List<IFormFile> Images { get; set; } = new List<IFormFile>();
         public List<CreateServiceOptionGroupDto> OptionGroups { get; set; } = new List<CreateServiceOptionGroupDto>();
     }
 

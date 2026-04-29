@@ -11,5 +11,6 @@ namespace Manzili.Application.Abstractions.Persistence
     public interface ICategoryRepo : IGenericRepo<Category>
     {
         public Task<CategoriesListDto> GetAllCategoriesAsync();
+        public Task<bool> ExistsAsync(int categoryId);
     }
 }

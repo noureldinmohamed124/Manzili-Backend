@@ -18,7 +18,6 @@
     <Folder Include="Events\" />
     <Folder Include="Shared\Commands\" />
     <Folder Include="Seller\Commands\Services\DeleteService\" />
-    <Folder Include="Seller\Commands\Services\UpdateService\" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,9 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Seller;
+using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Buyer.Queries.Services.GetServiceDetails;
 using Manzili.Application.Seller.Commands.Services.CreateService;
+using Manzili.Application.Seller.Commands.Services.UpdateService;
 using Manzili.Application.Seller.Queries.Services.GetAllSellerServices;
 using Manzili.Application.Seller.Queries.Services.GetSellerServiceById;
 using Manzili.Application.Seller.UseCases;
@@ -20,13 +22,15 @@ namespace Manzili.Api.Controllers.Seller
         private readonly GetSellerServicesUseCase _getSellerServicesUseCase;
         private readonly GetSellerServiceByIdUseCase _getSellerServiceByIdUseCase;
         private readonly CreateServiceUseCase _createServiceUseCase;
+        private readonly IFileStorageService _fileStorageService;
 
-        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase)
+        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, IFileStorageService fileStorageService)
         {
             _getDashboardStatsUseCase = getDashboardStatsUseCase;
             _getSellerServicesUseCase = getSellerServicesUseCase;
             _getSellerServiceByIdUseCase = getSellerServiceByIdUseCase;
             _createServiceUseCase = createServiceUseCase;
+            _fileStorageService = fileStorageService;
         }
 
         [HttpGet("dashboard")]
@@ -62,14 +66,24 @@ namespace Manzili.Api.Controllers.Seller
 
 
         [HttpPost("services")]
-        public async Task<IActionResult> CreateService(CreateServiceDto dto)
+        public async Task<IActionResult> CreateService([FromForm] CreateServiceDto dto)
         {
+            var imageUrls = new List<string>();
+
+            foreach (var image in dto.Images)
+            {
+                using var stream = image.OpenReadStream();
+                var imageUrl = await _fileStorageService.SaveImageAsync(stream, image.FileName, "services");
+
+                imageUrls.Add(imageUrl);
+            }
+
             var command = new CreateServiceCommand(
                 Title: dto.Title,
                 Description: dto.Description,
                 CategoryId: dto.CategoryId,
                 BasePrice: dto.BasePrice,
-                Images: dto.Images,
+                Images: imageUrls,
                 OptionGroups: dto.OptionGroups.Select(g => new CreateOptionGroupDto {
                     Name = g.Name,
                     IsRequired = g.IsRequired,
@@ -83,6 +97,54 @@ namespace Manzili.Api.Controllers.Seller
             await _createServiceUseCase.ExecuteAsync(command);
             return OkResponse(Messages.Service.Created);
         }
+
+
+        [HttpPut("services/{id}")]
+        public async Task<IActionResult> UpdateService(int id, [FromForm] UpdateServiceDto dto)
+        {
+
+            // 1. Upload images first
+            var imageUrls = new List<string>();
+
+            if (dto.Images != null && dto.Images.Any())
+            {
+                foreach (var image in dto.Images)
+                {
+                    using var stream = image.OpenReadStream();
+
+                    var imageUrl = await _fileStorageService
+                        .SaveImageAsync(stream, image.FileName, "services");
+
+                    imageUrls.Add(imageUrl);
+                }
+            }
+
+            var command = new UpdateServiceCommand(
+                ServiceId: id,
+                Title: dto.Title,
+                Description: dto.Description,
+                CategoryId: dto.CategoryId,
+                BasePrice: dto.BasePrice,
+                Images: imageUrls,
+                OptionGroups: dto.OptionGroups
+                    .Select(g => new UpdateOptionGroupCommand
+                    {
+                        Name = g.Name,
+                        IsRequired = g.IsRequired,
+                        Options = g.Options
+                            .Select(o => new UpdateOptionCommand
+                            {
+                                Name = o.Name,
+                                Price = o.Price
+                            }).ToList()
+                    }).ToList()
+            );
+
+            //await _updateServiceUseCase.ExecuteAsync(command);
+
+            return OkResponse(Messages.Service.Updated);
+        }
+
 
     }
 }
