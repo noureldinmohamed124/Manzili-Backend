@@ -31,7 +31,7 @@ namespace Manzili.Application.Seller.UseCases
             var sellerId = _currentUser.UserId;
 
             // 1. Get service
-            var service = await _serviceRepo.GetServiceDetailsForUpdateById(sellerId ,command.ServiceId);
+            var service = await _serviceRepo.GetServiceDetailsForUpdateByIdAsync(sellerId ,command.ServiceId);
 
             if (service == null)
                 throw new NotFoundException("Service not found");

@@ -297,12 +297,21 @@ namespace Manzili.Infrastructure.Repositories
             return service;
         }
 
-        public async Task<Service?> GetServiceDetailsForUpdateById(int sellerId, int serviceId)
+        public async Task<Service?> GetServiceDetailsForUpdateByIdAsync(int sellerId, int serviceId)
         {
             var service = await _context.Services
                 .Include(s => s.ServiceImages)
                 .Include(s => s.OptionGroups).ThenInclude(go => go.Options)
                 .FirstOrDefaultAsync(s => s.ProviderId == sellerId && s.Id == serviceId);
+            return service;
+        }
+
+        public async Task<Service?> GetServiceByIdWithTransactionsAsync(int id)
+        {
+            var service = await _context.Services
+                .Include(s => s.Transactions)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             return service;
         }
     }

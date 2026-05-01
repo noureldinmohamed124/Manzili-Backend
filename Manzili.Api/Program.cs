@@ -84,6 +84,7 @@ builder.Services.AddScoped<GetSellerServicesUseCase>();
 builder.Services.AddScoped<GetSellerServiceByIdUseCase>();
 builder.Services.AddScoped<CreateServiceUseCase>();
 builder.Services.AddScoped<UpdateServiceUseCase>();
+builder.Services.AddScoped<DeleteServiceUseCase>();
 
 
 

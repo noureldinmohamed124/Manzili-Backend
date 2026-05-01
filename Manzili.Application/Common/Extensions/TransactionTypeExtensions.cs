@@ -19,16 +19,6 @@ namespace Manzili.Application.Common.Extensions
         public static string OrderToString(this OrderTransactionTypeEnum status)
             => status.ToString();
 
-        // if (status.IsTerminal())
-        public static bool IsTerminal(this OrderTransactionTypeEnum status)
-        {
-            return status is
-                OrderTransactionTypeEnum.Rejected or
-                OrderTransactionTypeEnum.CancelledByBuyer or
-                OrderTransactionTypeEnum.CancelledBySeller or
-                OrderTransactionTypeEnum.Expired;
-        }
-
 
         public static bool IsActive(this OrderTransactionTypeEnum status)
         {

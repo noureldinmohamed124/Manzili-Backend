@@ -3,6 +3,7 @@ using Manzili.Api.DTOs.Seller;
 using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Buyer.Queries.Services.GetServiceDetails;
 using Manzili.Application.Seller.Commands.Services.CreateService;
+using Manzili.Application.Seller.Commands.Services.DeleteService;
 using Manzili.Application.Seller.Commands.Services.UpdateService;
 using Manzili.Application.Seller.Queries.Services.GetAllSellerServices;
 using Manzili.Application.Seller.Queries.Services.GetSellerServiceById;
@@ -23,9 +24,10 @@ namespace Manzili.Api.Controllers.Seller
         private readonly GetSellerServiceByIdUseCase _getSellerServiceByIdUseCase;
         private readonly CreateServiceUseCase _createServiceUseCase;
         private readonly UpdateServiceUseCase _updateServiceUseCase;
+        private readonly DeleteServiceUseCase _deleteServiceUseCase;
         private readonly IFileStorageService _fileStorageService;
 
-        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService)
+        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService, DeleteServiceUseCase deleteServiceUseCase)
         {
             _getDashboardStatsUseCase = getDashboardStatsUseCase;
             _getSellerServicesUseCase = getSellerServicesUseCase;
@@ -33,6 +35,7 @@ namespace Manzili.Api.Controllers.Seller
             _createServiceUseCase = createServiceUseCase;
             _updateServiceUseCase = updateServiceUseCase;
             _fileStorageService = fileStorageService;
+            _deleteServiceUseCase = deleteServiceUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -148,13 +151,15 @@ namespace Manzili.Api.Controllers.Seller
         }
 
 
-        //[HttpDelete("services/{id}")]
-        //public async Task<IActionResult> UpdateService(int serviceId)
-        //{
+        [HttpDelete("services/{id}")]
+        public async Task<IActionResult> DeleteService(int id)
+        {
+            var command = new DeleteServiceCommand(id);
 
+            await _deleteServiceUseCase.ExecuteAsync(command);
 
-        //    return OkResponse(Messages.Service.Deleted);
-        //}
+            return OkResponse(Messages.Service.Deleted);
+        }
 
     }
 }
