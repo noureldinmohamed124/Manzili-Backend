@@ -22,5 +22,6 @@ namespace Manzili.Application.Abstractions.Persistence
         // For Seller
         Task<SellerServicesListDto> GetSellerServicesAsync(int sellerId, GetSellerServicesQuery q);
         Task<SellerServiceDetailsDto?> GetSellerServiceByIdAsync(int sellerId, int serviceId);
+        Task<Service?> GetServiceDetailsForUpdateById(int sellerId, int serviceId);
     }
 }

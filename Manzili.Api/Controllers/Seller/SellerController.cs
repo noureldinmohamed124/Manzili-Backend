@@ -22,14 +22,16 @@ namespace Manzili.Api.Controllers.Seller
         private readonly GetSellerServicesUseCase _getSellerServicesUseCase;
         private readonly GetSellerServiceByIdUseCase _getSellerServiceByIdUseCase;
         private readonly CreateServiceUseCase _createServiceUseCase;
+        private readonly UpdateServiceUseCase _updateServiceUseCase;
         private readonly IFileStorageService _fileStorageService;
 
-        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, IFileStorageService fileStorageService)
+        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService)
         {
             _getDashboardStatsUseCase = getDashboardStatsUseCase;
             _getSellerServicesUseCase = getSellerServicesUseCase;
             _getSellerServiceByIdUseCase = getSellerServiceByIdUseCase;
             _createServiceUseCase = createServiceUseCase;
+            _updateServiceUseCase = updateServiceUseCase;
             _fileStorageService = fileStorageService;
         }
 
@@ -140,11 +142,19 @@ namespace Manzili.Api.Controllers.Seller
                     }).ToList()
             );
 
-            //await _updateServiceUseCase.ExecuteAsync(command);
+            await _updateServiceUseCase.ExecuteAsync(command);
 
             return OkResponse(Messages.Service.Updated);
         }
 
+
+        //[HttpDelete("services/{id}")]
+        //public async Task<IActionResult> UpdateService(int serviceId)
+        //{
+
+
+        //    return OkResponse(Messages.Service.Deleted);
+        //}
 
     }
 }
