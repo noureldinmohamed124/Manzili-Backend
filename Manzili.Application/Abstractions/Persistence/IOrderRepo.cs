@@ -1,5 +1,7 @@
 ﻿using Manzili.Application.Buyer.Queries.Orders.GetAllOrders;
 using Manzili.Application.Common.Enums;
+using Manzili.Application.Seller.Queries.Orders.GetAllSellerOrders;
+using Manzili.Application.Seller.Queries.Orders.GetSellerOrderDetailsById;
 using Manzili.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -17,5 +19,11 @@ namespace Manzili.Application.Abstractions.Persistence
 
         // For Submit Payment
         Task<List<Transaction>> GetOrdersForPaymentAsync(int buyerId, IReadOnlyList<int> orderIds);
+
+        // For get Seller Orders
+        Task<SellerOrdersListDto> GetSellerOrdersAsync(int sellerId, GetSellerOrdersQuery query);
+        Task<SellerOrderDetailsDto?> GetSellerOrderByIdAsync(int sellerId, int orderId);
+
+        Task<Transaction?> GetSellerOrderForUpdateAsync(int sellerId, int orderId);
     }
 }

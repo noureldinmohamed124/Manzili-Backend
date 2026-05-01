@@ -16,5 +16,18 @@ namespace Manzili.Application.Common.Extensions
                 || status == OrderTransactionTypeEnum.CancelledBySeller
                 || status == OrderTransactionTypeEnum.Expired;
         }
+
+        public static bool CanBeRejected(this OrderTransactionTypeEnum status)
+        {
+            return status == OrderTransactionTypeEnum.Request
+                ||
+                status == OrderTransactionTypeEnum.RePriced;
+        }
+
+
+        public static bool CanBeRepriced(this OrderTransactionTypeEnum status)
+        {
+            return status == OrderTransactionTypeEnum.Request;
+        }
     }
 }

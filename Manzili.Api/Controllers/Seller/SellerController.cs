@@ -1,10 +1,13 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Seller;
 using Manzili.Application.Abstractions.FileStorage;
-using Manzili.Application.Buyer.Queries.Services.GetServiceDetails;
+using Manzili.Application.Seller.Commands.Orders.ApproveOrder;
+using Manzili.Application.Seller.Commands.Orders.RejectOrder;
+using Manzili.Application.Seller.Commands.Orders.RePrice_Order;
 using Manzili.Application.Seller.Commands.Services.CreateService;
 using Manzili.Application.Seller.Commands.Services.DeleteService;
 using Manzili.Application.Seller.Commands.Services.UpdateService;
+using Manzili.Application.Seller.Queries.Orders.GetAllSellerOrders;
 using Manzili.Application.Seller.Queries.Services.GetAllSellerServices;
 using Manzili.Application.Seller.Queries.Services.GetSellerServiceById;
 using Manzili.Application.Seller.UseCases;
@@ -25,9 +28,14 @@ namespace Manzili.Api.Controllers.Seller
         private readonly CreateServiceUseCase _createServiceUseCase;
         private readonly UpdateServiceUseCase _updateServiceUseCase;
         private readonly DeleteServiceUseCase _deleteServiceUseCase;
+        private readonly GetSellerOrdersUseCase _getSellerOrdersUseCase;
+        private readonly GetSellerOrderByIdUseCase _getSellerOrderByIdUseCase;
+        private readonly ApproveOrderUseCase _approveOrderUseCase;
+        private readonly RejectOrderUseCase _rejectOrderUseCase;
+        private readonly RepriceOrderUseCase _repriceOrderUseCase;
         private readonly IFileStorageService _fileStorageService;
 
-        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService, DeleteServiceUseCase deleteServiceUseCase)
+        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService, DeleteServiceUseCase deleteServiceUseCase, GetSellerOrdersUseCase getSellerOrdersUseCase, GetSellerOrderByIdUseCase getSellerOrderByIdUseCase, ApproveOrderUseCase approveOrderUseCase, RejectOrderUseCase rejectOrderUseCase, RepriceOrderUseCase repriceOrderUseCase)
         {
             _getDashboardStatsUseCase = getDashboardStatsUseCase;
             _getSellerServicesUseCase = getSellerServicesUseCase;
@@ -36,6 +44,11 @@ namespace Manzili.Api.Controllers.Seller
             _updateServiceUseCase = updateServiceUseCase;
             _fileStorageService = fileStorageService;
             _deleteServiceUseCase = deleteServiceUseCase;
+            _getSellerOrdersUseCase = getSellerOrdersUseCase;
+            _getSellerOrderByIdUseCase = getSellerOrderByIdUseCase;
+            _approveOrderUseCase = approveOrderUseCase;
+            _rejectOrderUseCase = rejectOrderUseCase;
+            _repriceOrderUseCase = repriceOrderUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -159,6 +172,67 @@ namespace Manzili.Api.Controllers.Seller
             await _deleteServiceUseCase.ExecuteAsync(command);
 
             return OkResponse(Messages.Service.Deleted);
+        }
+
+
+        // Orders Actions Endpoints
+        [HttpGet("orders")]
+        public async Task<IActionResult> GetAllSellerOrders([FromQuery] GetAllSellerOrdersDto dto)
+        {
+            var query = new GetSellerOrdersQuery(
+                Status: dto.Status,
+                Page: dto.Page ?? 1,
+                PageSize: dto.PageSize ?? 10
+            );
+            
+            var result =  await _getSellerOrdersUseCase.ExecuteAsync(query);
+            return OkResponse(result);
+        }
+
+
+        [HttpGet("orders/{id}")]
+        public async Task<IActionResult> GetSellerOrderDetailsById(int id)
+        {
+            var result = await _getSellerOrderByIdUseCase.ExecuteAsync(id);
+            return OkResponse(result);
+        }
+
+
+        [HttpPost("orders/{id}/approve")]
+        public async Task<IActionResult> ApproveOrder(int id)
+        {
+            await _approveOrderUseCase.ExecuteAsync(new ApproveOrderCommand(id));
+
+            return OkResponse(Messages.Order.Approved);
+        }
+
+
+        [HttpPost("orders/{id}/reject")]
+        public async Task<IActionResult> RejectOrder(int id, RejectOrderDto dto)
+        {
+            var command = new RejectOrderCommand(
+                id,
+                dto.Reason
+            );
+
+            await _rejectOrderUseCase.ExecuteAsync(command);
+
+            return OkResponse(Messages.Order.Rejected);
+        }
+
+
+        [HttpPost("orders/{id}/reprice")]
+        public async Task<IActionResult> RepriceOrder(int id, RepriceOrderDto dto)
+        {
+            var command = new RepriceOrderCommand(
+                id,
+                dto.NewPrice,
+                dto.Reason
+            );
+
+            await _repriceOrderUseCase.ExecuteAsync(command);
+
+            return OkResponse(Messages.Order.Repriced);
         }
 
     }

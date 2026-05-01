@@ -85,6 +85,11 @@ builder.Services.AddScoped<GetSellerServiceByIdUseCase>();
 builder.Services.AddScoped<CreateServiceUseCase>();
 builder.Services.AddScoped<UpdateServiceUseCase>();
 builder.Services.AddScoped<DeleteServiceUseCase>();
+builder.Services.AddScoped<GetSellerOrdersUseCase>();
+builder.Services.AddScoped<GetSellerOrderByIdUseCase>();
+builder.Services.AddScoped<ApproveOrderUseCase>();
+builder.Services.AddScoped<RejectOrderUseCase>();
+builder.Services.AddScoped<RepriceOrderUseCase>();
 
 
 
