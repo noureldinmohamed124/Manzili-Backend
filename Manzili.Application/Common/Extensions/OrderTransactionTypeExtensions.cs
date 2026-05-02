@@ -29,5 +29,19 @@ namespace Manzili.Application.Common.Extensions
         {
             return status == OrderTransactionTypeEnum.Request;
         }
+
+        public static bool CanTransitionTo(this OrderTransactionTypeEnum current, OrderTransactionTypeEnum next)
+        {
+            return current switch
+            {
+                OrderTransactionTypeEnum.Paid => next == OrderTransactionTypeEnum.InProgress,
+
+                OrderTransactionTypeEnum.InProgress => next == OrderTransactionTypeEnum.ReadyForShipping,
+
+                OrderTransactionTypeEnum.ReadyForShipping => next == OrderTransactionTypeEnum.Shipped,
+
+                _ => false
+            };
+        }
     }
 }

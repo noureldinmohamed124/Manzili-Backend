@@ -4,6 +4,7 @@ using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Seller.Commands.Orders.ApproveOrder;
 using Manzili.Application.Seller.Commands.Orders.RejectOrder;
 using Manzili.Application.Seller.Commands.Orders.RePrice_Order;
+using Manzili.Application.Seller.Commands.Orders.UpdateOrderStatus;
 using Manzili.Application.Seller.Commands.Services.CreateService;
 using Manzili.Application.Seller.Commands.Services.DeleteService;
 using Manzili.Application.Seller.Commands.Services.UpdateService;
@@ -33,9 +34,10 @@ namespace Manzili.Api.Controllers.Seller
         private readonly ApproveOrderUseCase _approveOrderUseCase;
         private readonly RejectOrderUseCase _rejectOrderUseCase;
         private readonly RepriceOrderUseCase _repriceOrderUseCase;
+        private readonly UpdateOrderStatusUseCase _updateOrderStatusUseCase;
         private readonly IFileStorageService _fileStorageService;
 
-        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService, DeleteServiceUseCase deleteServiceUseCase, GetSellerOrdersUseCase getSellerOrdersUseCase, GetSellerOrderByIdUseCase getSellerOrderByIdUseCase, ApproveOrderUseCase approveOrderUseCase, RejectOrderUseCase rejectOrderUseCase, RepriceOrderUseCase repriceOrderUseCase)
+        public SellerController(GetDashboardStatsUseCase getDashboardStatsUseCase, GetSellerServicesUseCase getSellerServicesUseCase, GetSellerServiceByIdUseCase getSellerServiceByIdUseCase, CreateServiceUseCase createServiceUseCase, UpdateServiceUseCase updateServiceUseCase, IFileStorageService fileStorageService, DeleteServiceUseCase deleteServiceUseCase, GetSellerOrdersUseCase getSellerOrdersUseCase, GetSellerOrderByIdUseCase getSellerOrderByIdUseCase, ApproveOrderUseCase approveOrderUseCase, RejectOrderUseCase rejectOrderUseCase, RepriceOrderUseCase repriceOrderUseCase, UpdateOrderStatusUseCase updateOrderStatusUseCase)
         {
             _getDashboardStatsUseCase = getDashboardStatsUseCase;
             _getSellerServicesUseCase = getSellerServicesUseCase;
@@ -49,6 +51,7 @@ namespace Manzili.Api.Controllers.Seller
             _approveOrderUseCase = approveOrderUseCase;
             _rejectOrderUseCase = rejectOrderUseCase;
             _repriceOrderUseCase = repriceOrderUseCase;
+            _updateOrderStatusUseCase = updateOrderStatusUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -233,6 +236,20 @@ namespace Manzili.Api.Controllers.Seller
             await _repriceOrderUseCase.ExecuteAsync(command);
 
             return OkResponse(Messages.Order.Repriced);
+        }
+
+
+
+        [HttpPatch("orders/{id}/status")]
+        public async Task<IActionResult> UpdateOrderStatus(int id, UpdateOrderStatusDto dto)
+        {
+            var command = new UpdateOrderStatusCommand(
+                id,
+                dto.Status
+            );
+            await _updateOrderStatusUseCase.ExecuteAsync(command);
+
+            return OkResponse(Messages.Order.StatusUpdated(dto.Status.ToString()));
         }
 
     }

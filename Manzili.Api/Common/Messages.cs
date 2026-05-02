@@ -24,6 +24,8 @@
             public const string Rejected = "Order has been Rejected.";
             public const string Repriced = "Order has been RePriced successfully.";
 
+            public static string StatusUpdated(string status) => $"Order now became {status}";
+
             public static string CustomMessage(string action) => $"Order {action} successfully.";
         }
     }

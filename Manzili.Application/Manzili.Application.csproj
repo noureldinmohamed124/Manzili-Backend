@@ -11,8 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Admin\Commands\" />
-    <Folder Include="Admin\Queries\" />
+    <Folder Include="Admin\Services\Commands\" />
+    <Folder Include="Admin\Payments\" />
+    <Folder Include="Admin\Services\" />
+    <Folder Include="Admin\Orders\" />
+    <Folder Include="Admin\Users\" />
+    <Folder Include="Admin\Services\Queries\" />
     <Folder Include="Admin\UseCases\" />
     <Folder Include="Auth\Queries\" />
     <Folder Include="Events\" />

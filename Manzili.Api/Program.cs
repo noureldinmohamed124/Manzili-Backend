@@ -2,6 +2,7 @@
 using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
+using Manzili.Application.Admin.Dashboard;
 using Manzili.Application.Auth.UseCases;
 using Manzili.Application.Buyer.UseCases.Orders;
 using Manzili.Application.Buyer.UseCases.Services;
@@ -44,6 +45,7 @@ builder.Services.AddScoped<IAddressRepo, AddressRepo>();
 builder.Services.AddScoped<IPaymentProofRepo, PaymentProofRepo>();
 builder.Services.AddScoped<ISellerRepo, SellerRepo>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+builder.Services.AddScoped<IAdminRepo, AdminRepo>();
 
 
 
@@ -70,7 +72,7 @@ builder.Services.AddScoped<RefreshTokenUseCase>();
 builder.Services.AddScoped<GetAllCategoriesUseCase>();
 // Services
 builder.Services.AddScoped<GetAllServicesUseCase>();
-builder.Services.AddScoped<GetServiceUseCase>();
+builder.Services.AddScoped<GetServiceByIdUseCase>();
 builder.Services.AddScoped<GetHomeSectionUseCase>();
 builder.Services.AddScoped<SearchServicesUseCase>();
 // Orders
@@ -90,7 +92,9 @@ builder.Services.AddScoped<GetSellerOrderByIdUseCase>();
 builder.Services.AddScoped<ApproveOrderUseCase>();
 builder.Services.AddScoped<RejectOrderUseCase>();
 builder.Services.AddScoped<RepriceOrderUseCase>();
-
+builder.Services.AddScoped<UpdateOrderStatusUseCase>();
+// Admin
+builder.Services.AddScoped<GetAdminDashboardStatsUseCase>();
 
 
 

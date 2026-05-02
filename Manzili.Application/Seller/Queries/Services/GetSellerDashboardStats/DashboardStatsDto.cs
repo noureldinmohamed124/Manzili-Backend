@@ -10,8 +10,11 @@ namespace Manzili.Application.Seller.Queries.Services.GetDashboardStats
     {
         public int TotalServices { get; set; }
         public int ActiveOrders { get; set; }
+        public int PendingRequests { get; set; }
         public int CompletedOrders { get; set; }
         public decimal TotalRevenue { get; set; }
+        public decimal ExpectedRevenue { get; set; }
+        public decimal OnWaitingRevenue { get; set; }
         public decimal AverageRating { get; set; }
     }
 }

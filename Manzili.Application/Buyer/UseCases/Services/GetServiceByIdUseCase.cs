@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Manzili.Application.Buyer.UseCases.Services
 {
-    public class GetServiceUseCase
+    public class GetServiceByIdUseCase
     {
         private readonly IServiceRepo _serviceRepo;
 
-        public GetServiceUseCase(IServiceRepo serviceRepo)
+        public GetServiceByIdUseCase(IServiceRepo serviceRepo)
         {
             _serviceRepo = serviceRepo;
         }

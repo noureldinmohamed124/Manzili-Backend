@@ -15,10 +15,10 @@ namespace Manzili.Api.Controllers
     {
         private readonly GetHomeSectionUseCase _getHomeSectionUseCase;
         private readonly GetAllServicesUseCase _getAllServicesUseCase;
-        private readonly GetServiceUseCase _getServiceUseCase;
+        private readonly GetServiceByIdUseCase _getServiceUseCase;
         private readonly SearchServicesUseCase _searchServicesUseCase;
 
-        public ServicesController(GetHomeSectionUseCase getHomeSectionUseCase, GetAllServicesUseCase getAllServicesUseCase, GetServiceUseCase getServiceUseCase, SearchServicesUseCase searchServicesUseCase)
+        public ServicesController(GetHomeSectionUseCase getHomeSectionUseCase, GetAllServicesUseCase getAllServicesUseCase, GetServiceByIdUseCase getServiceUseCase, SearchServicesUseCase searchServicesUseCase)
         {
             _getHomeSectionUseCase = getHomeSectionUseCase;
             _getAllServicesUseCase = getAllServicesUseCase;

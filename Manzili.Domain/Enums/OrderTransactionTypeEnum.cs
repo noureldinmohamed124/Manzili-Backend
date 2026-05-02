@@ -24,6 +24,11 @@ namespace Manzili.Application.Common.Enums
         Rejected = 11,
         CancelledByBuyer = 12,
         CancelledBySeller = 13,
-        Expired = 14
+        Expired = 14,
+
+        OutForDelivery = 19,
+        DeliveryAttemptFailed = 20,
+        Delayed = 21,
+        Confirmed = 22,
     }
 }
