@@ -29,6 +29,6 @@ namespace Manzili.Application.Common.Enums
         OutForDelivery = 19,
         DeliveryAttemptFailed = 20,
         Delayed = 21,
-        Confirmed = 22,
+        Confirmed = 22
     }
 }

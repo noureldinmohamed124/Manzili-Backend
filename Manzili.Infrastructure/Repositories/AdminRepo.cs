@@ -71,20 +71,22 @@ namespace Manzili.Infrastructure.Repositories
             // =========================
 
             var totalOrders = await _context.Transactions
-                .Where(t => t.ServiceId == null)
+                .Where(t => t.ServiceId != null)
                 .AsNoTracking()
                 .CountAsync(cancellationToken);
 
             var activeOrders = await _context.Transactions
                 .AsNoTracking()
                 .CountAsync(
-                t => t.ServiceId == null && t.TransactionTypeId != OrderTransactionTypeEnum.CancelledByBuyer.ToId(),
-                    cancellationToken);
+                t => t.ServiceId != null &&
+                OrderTransactionTypeExtensions.ActiveStatuses.Contains(t.TransactionTypeId),
+                cancellationToken);
 
             var completedOrders = await _context.Transactions
                 .AsNoTracking()
                 .CountAsync(
-                    t => t.ServiceId == null && t.TransactionTypeId != OrderTransactionTypeEnum.Confirmed.ToId(),
+                    t => t.ServiceId == null &&
+                    t.TransactionTypeId == OrderTransactionTypeEnum.Confirmed.ToId(),
                     cancellationToken);
 
             var cancelledOrders = await _context.Transactions
@@ -111,7 +113,7 @@ namespace Manzili.Infrastructure.Repositories
 
             var totalRevenue = await _context.Transactions
                 .AsNoTracking()
-                .Where(x => x.ServiceId != null && x.TransactionTypeId == OrderTransactionTypeEnum.Confirmed.ToId())
+                .Where(x => x.ServiceId == null && x.TransactionTypeId == OrderTransactionTypeEnum.Confirmed.ToId())
                 .Select(x => (decimal?)x.TotalPrice)
                 .SumAsync(cancellationToken) ?? 0;
 

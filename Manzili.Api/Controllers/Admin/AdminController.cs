@@ -19,14 +19,11 @@ namespace Manzili.Api.Controllers.Admin
         }
 
         [HttpGet("dashboard")]
-        public async Task<IActionResult> GetDashboardStats(
-        CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDashboardStats()
         {
             var query = new GetDashboardStatsQuery();
 
-            var result = await _getAdminDashboardStatsUseCase.ExecuteAsync(
-                query,
-                cancellationToken);
+            var result = await _getAdminDashboardStatsUseCase.ExecuteAsync(query);
 
             return Ok(result);
         }
