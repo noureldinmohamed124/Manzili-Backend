@@ -3,6 +3,11 @@ using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Abstractions.Persistence;
 using Manzili.Application.Abstractions.Security;
 using Manzili.Application.Admin.Dashboard;
+using Manzili.Application.Admin.Financials.Queries;
+using Manzili.Application.Admin.Financials.UseCases;
+using Manzili.Application.Admin.Orders.UseCases;
+using Manzili.Application.Admin.Services.UseCases;
+using Manzili.Application.Admin.Users.UseCases;
 using Manzili.Application.Auth.UseCases;
 using Manzili.Application.Buyer.UseCases.Orders;
 using Manzili.Application.Buyer.UseCases.Services;
@@ -95,6 +100,13 @@ builder.Services.AddScoped<RepriceOrderUseCase>();
 builder.Services.AddScoped<UpdateOrderStatusUseCase>();
 // Admin
 builder.Services.AddScoped<GetAdminDashboardStatsUseCase>();
+builder.Services.AddScoped<GetAdminAllUsersUseCase>();
+builder.Services.AddScoped<GetAdminUserDetailsUseCase>();
+builder.Services.AddScoped<BlockUserUseCase>();
+builder.Services.AddScoped<UnblockUserUseCase>();
+builder.Services.AddScoped<GetAdminServicesUseCase>();
+builder.Services.AddScoped<GetAdminOrdersUseCase>();
+builder.Services.AddScoped<GetAdminFinancialsUseCase>();
 
 
 

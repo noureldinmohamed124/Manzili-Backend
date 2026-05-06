@@ -1,6 +1,7 @@
 ﻿using Manzili.Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace Manzili.Domain.Entities
         public bool IsBlocked { get; set; } = false;
         public DateTime? BlockedUntil { get; set; }
         public string? BlockReason { get; set; }
+        public int? BlockedByAdminId { get; set; }
 
         // Audit
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -50,6 +52,10 @@ namespace Manzili.Domain.Entities
         public ICollection<PromotionUsage> PromotionUsages { get; set; } = new List<PromotionUsage>();
 
         public ProviderAnalytics? ProviderAnalytics { get; set; } = null!;
+
+
+        [NotMapped]
+        public bool IsCurrentlyBlocked => IsBlocked && (BlockedUntil == null || BlockedUntil > DateTime.UtcNow);
 
     }
 }

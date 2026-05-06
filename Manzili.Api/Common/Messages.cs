@@ -28,5 +28,12 @@
 
             public static string CustomMessage(string action) => $"Order {action} successfully.";
         }
+
+
+        public static class Admin
+        {
+            public const string Blocked = "User Blocked successfully.";
+            public const string Unblocked = "User Unblocked successfully.";
+        }
     }
 }

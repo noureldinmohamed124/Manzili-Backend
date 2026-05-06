@@ -1,0 +1,24 @@
+﻿using Manzili.Application.Common.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Manzili.Application.Common.Extensions
+{
+    public static class FinancialTransactionTypesExtension
+    {
+        public static readonly int[] RevenueStatuses =
+        {
+            OrderTransactionTypeEnum.Paid.ToId(),
+            OrderTransactionTypeEnum.InProgress.ToId(),
+            OrderTransactionTypeEnum.ReadyForShipping.ToId(),
+            OrderTransactionTypeEnum.Shipped.ToId(),
+            OrderTransactionTypeEnum.OutForDelivery.ToId(),
+            OrderTransactionTypeEnum.Confirmed.ToId()
+        };
+
+
+    }
+}
