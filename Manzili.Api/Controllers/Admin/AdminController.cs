@@ -5,6 +5,8 @@ using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Financials.UseCases;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
 using Manzili.Application.Admin.Orders.UseCases;
+using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
+using Manzili.Application.Admin.Payments.UseCases;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
 using Manzili.Application.Admin.Services.UseCases;
 using Manzili.Application.Admin.Users.Commands.BlockUser;
@@ -33,8 +35,9 @@ namespace Manzili.Api.Controllers.Admin
         private readonly GetAdminServicesUseCase _getAdminServicesUseCase;
         private readonly GetAdminOrdersUseCase _getAdminOrdersUseCase;
         private readonly GetAdminFinancialsUseCase _getAdminFinancialsUseCase;
+        private readonly GetPaymentRequestsUseCase _getPaymentRequestsUseCase;
 
-        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase)
+        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase)
         {
             _getAdminDashboardStatsUseCase = getAdminDashboardStatsUseCase;
             _getAdminAllUsersUseCase = getAdminAllUsersUseCase;
@@ -44,6 +47,7 @@ namespace Manzili.Api.Controllers.Admin
             _getAdminServicesUseCase = getAdminServicesUseCase;
             _getAdminOrdersUseCase = getAdminOrdersUseCase;
             _getAdminFinancialsUseCase = getAdminFinancialsUseCase;
+            _getPaymentRequestsUseCase = getPaymentRequestsUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -178,6 +182,23 @@ namespace Manzili.Api.Controllers.Admin
         }
 
 
+        [HttpGet("payments")]
+        public async Task<IActionResult> GetPaymentRequests([FromQuery] GetPaymentRequestsDto dto, CancellationToken cancellationToken)
+        {
+            var query = new GetPaymentRequestsQuery
+            {
+                BuyerId = dto.BuyerId,
+                From = dto.From,
+                Page = dto.Page,
+                PageSize = dto.PageSize,
+                ProviderId = dto.ProviderId,
+                To = dto.To
+            };
+
+            var result = await _getPaymentRequestsUseCase.ExecuteAsync(query, cancellationToken);
+
+            return OkResponse(result);
+        }
 
     }
 }

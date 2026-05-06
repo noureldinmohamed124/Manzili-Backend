@@ -1,5 +1,6 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Orders;
+using Manzili.Application.Abstractions.FileStorage;
 using Manzili.Application.Buyer.Commands.Orders;
 using Manzili.Application.Buyer.Commands.Orders.SubmitPayment;
 using Manzili.Application.Buyer.Queries.Orders.GetAllOrders;
@@ -7,6 +8,7 @@ using Manzili.Application.Buyer.Queries.Orders.GetPaymentSummary;
 using Manzili.Application.Buyer.UseCases.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Manzili.Api.Controllers
 {
@@ -19,13 +21,15 @@ namespace Manzili.Api.Controllers
         private readonly GetAllOrdersUseCase _getAllOrdersUseCase;
         private readonly GetPaymentSummaryUseCase _getPaymentSummaryUseCase;
         private readonly SubmitPaymentUseCase _submitPaymentUseCase;
+        private readonly IFileStorageService _fileStorageService;
 
-        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase, GetPaymentSummaryUseCase getPaymentSummaryUseCase, SubmitPaymentUseCase submitPaymentUseCase)
+        public OrdersController(RequestServiceUseCase requestServiceUseCase, GetAllOrdersUseCase getAllOrdersUseCase, GetPaymentSummaryUseCase getPaymentSummaryUseCase, SubmitPaymentUseCase submitPaymentUseCase, IFileStorageService fileStorageService)
         {
             _requestServiceUseCase = requestServiceUseCase;
             _getAllOrdersUseCase = getAllOrdersUseCase;
             _getPaymentSummaryUseCase = getPaymentSummaryUseCase;
             _submitPaymentUseCase = submitPaymentUseCase;
+            _fileStorageService = fileStorageService;
         }
 
 
@@ -84,11 +88,14 @@ namespace Manzili.Api.Controllers
 
         // submit payment
         [HttpPost("submit-payment")]
-        public async Task<IActionResult> SubmitPayment(SubmitPaymentRequestDto dto)
+        public async Task<IActionResult> SubmitPayment([FromForm]SubmitPaymentRequestDto dto)
         {
+            using var stream = dto.PaymentScreenshot.OpenReadStream();
+            var imageUrl = await _fileStorageService.SaveImageAsync(stream, dto.PaymentScreenshot.FileName, "payments");
+
             var command = new SubmitPaymentCommand(
                 OrderIds: dto.OrderIds,
-                PaymentScreenshot: dto.PaymentScreenshot,
+                PaymentScreenshot: imageUrl,
                 Notes: dto.Notes
             );
             var result = await _submitPaymentUseCase.ExecuteAsync(command);
@@ -96,30 +103,5 @@ namespace Manzili.Api.Controllers
         }
 
 
-        //// accept the service request from the buyer
-        //[HttpPost("accept")]
-        //public async Task<IActionResult> AcceptTheOrder()
-        //{
-
-        //    return OkResponse("");
-        //}
-
-
-        //// Reprice the Request by the provider
-        //[HttpPost("reprice")]
-        //public async Task<IActionResult> RepriceTheOrder(RePriceOrderDto dto)
-        //{
-
-        //    return OkResponse("");
-        //}
-
-
-        //// accept the RePrice by the buyer
-        //[HttpPost("accept-price")]
-        //public async Task<IActionResult> AcceptTheRequestRePrice()
-        //{
-
-        //    return OkResponse("");
-        //}
     }
 }

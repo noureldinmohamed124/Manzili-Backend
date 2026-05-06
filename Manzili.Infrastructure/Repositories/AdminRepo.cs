@@ -2,6 +2,7 @@
 using Manzili.Application.Admin.Dashboard.Queries.GetAdminDashboardStats;
 using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
+using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
 using Manzili.Application.Admin.Users;
 using Manzili.Application.Admin.Users.Queries.GetAdminAllUsers;
@@ -563,6 +564,98 @@ namespace Manzili.Infrastructure.Repositories
                 TotalRevenue = totalRevenue
             };
         }
+
+        public async Task<PagedResult<PaymentRequestDto>> GetPaymentRequestsAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default)
+        {
+            // =========================
+            // Base Query
+            // =========================
+
+            var queryable = _context.Transactions
+                .AsNoTracking()
+                .Where(t =>
+                    t.TransactionTypeId == OrderTransactionTypeEnum.PendingPaymentVerification.ToId() &&
+                    t.PaymentProofId != null &&
+                    t.ServiceId != null);
+
+            // =========================
+            // Filtering
+            // =========================
+
+            if (query.BuyerId.HasValue)
+            {
+                queryable = queryable
+                    .Where(t => t.BuyerId == query.BuyerId.Value);
+            }
+
+            if (query.ProviderId.HasValue)
+            {
+                queryable = queryable
+                    .Where(t => t.ProviderId == query.ProviderId.Value);
+            }
+
+            if (query.From.HasValue)
+            {
+                queryable = queryable
+                    .Where(t => t.CreatedAt >= query.From.Value);
+            }
+
+            if (query.To.HasValue)
+            {
+                queryable = queryable
+                    .Where(t => t.CreatedAt <= query.To.Value);
+            }
+
+            // =========================
+            // Count
+            // =========================
+
+            var totalCount = await queryable.CountAsync(cancellationToken);
+
+            // =========================
+            // Pagination
+            // =========================
+
+            var pageSize = Math.Min(query.PageSize, 50);
+            var skip = (query.Page - 1) * pageSize;
+
+            // =========================
+            // Projection
+            // =========================
+
+            var items = await queryable
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(t => new PaymentRequestDto
+                {
+                    TransactionId = t.Id,
+
+                    OrderId = t.ParentTransactionId ?? t.Id,
+
+                    ServiceTitle = t.Service!.Title,
+
+                    BuyerName = t.Buyer.FullName,
+                    ProviderName = t.Provider.FullName,
+
+                    TotalPrice = t.TotalPrice,
+
+                    PaymentProofId = t.PaymentProofId!.Value,
+                    PaymentProofImage = t.PaymentProof!.ScreenshotUrl, // adjust property name if different
+
+                    CreatedAt = t.CreatedAt
+                })
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<PaymentRequestDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = query.Page,
+                PageSize = pageSize
+            };
+        }
+
 
         // Helper Method
         public static ServiceStatus ServiceStatusSwithcher(string status)

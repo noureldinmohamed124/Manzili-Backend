@@ -1,6 +1,7 @@
 ﻿using Manzili.Api.Common;
 using Manzili.Api.DTOs.Seller;
 using Manzili.Application.Abstractions.FileStorage;
+using Manzili.Application.Exceptions;
 using Manzili.Application.Seller.Commands.Orders.ApproveOrder;
 using Manzili.Application.Seller.Commands.Orders.RejectOrder;
 using Manzili.Application.Seller.Commands.Orders.RePrice_Order;
@@ -90,6 +91,11 @@ namespace Manzili.Api.Controllers.Seller
         public async Task<IActionResult> CreateService([FromForm] CreateServiceDto dto)
         {
             var imageUrls = new List<string>();
+
+            if (dto.Images.Count() <= 0)
+            {
+                throw new ValidationException("Must Upload 1 Image at least");
+            }
 
             foreach (var image in dto.Images)
             {

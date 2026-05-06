@@ -1,6 +1,7 @@
 ﻿using Manzili.Application.Admin.Dashboard.Queries.GetAdminDashboardStats;
 using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
+using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
 using Manzili.Application.Admin.Users;
 using Manzili.Application.Admin.Users.Queries.GetAdminAllUsers;
@@ -27,6 +28,9 @@ namespace Manzili.Application.Abstractions.Persistence
         Task<PagedResult<AdminOrderDto>> GetOrdersAsync(GetAdminOrdersQuery query, CancellationToken cancellationToken = default);
 
         Task<AdminFinancialsResult> GetFinancialsAsync(GetAdminFinancialsQuery query, CancellationToken cancellationToken = default);
+
+
+        Task<PagedResult<PaymentRequestDto>> GetPaymentRequestsAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default);
 
     }
 }

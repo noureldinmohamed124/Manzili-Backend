@@ -6,6 +6,7 @@ using Manzili.Application.Admin.Dashboard;
 using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Financials.UseCases;
 using Manzili.Application.Admin.Orders.UseCases;
+using Manzili.Application.Admin.Payments.UseCases;
 using Manzili.Application.Admin.Services.UseCases;
 using Manzili.Application.Admin.Users.UseCases;
 using Manzili.Application.Auth.UseCases;
@@ -107,6 +108,7 @@ builder.Services.AddScoped<UnblockUserUseCase>();
 builder.Services.AddScoped<GetAdminServicesUseCase>();
 builder.Services.AddScoped<GetAdminOrdersUseCase>();
 builder.Services.AddScoped<GetAdminFinancialsUseCase>();
+builder.Services.AddScoped<GetPaymentRequestsUseCase>();
 
 
 
