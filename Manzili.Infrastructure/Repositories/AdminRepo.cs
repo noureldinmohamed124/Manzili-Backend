@@ -4,6 +4,7 @@ using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
 using Manzili.Application.Admin.Payments.Commands;
 using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
+using Manzili.Application.Admin.Payments.Queries.GetPaymentProofById;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
 using Manzili.Application.Admin.Users;
 using Manzili.Application.Admin.Users.Queries.GetAdminAllUsers;
@@ -879,6 +880,135 @@ namespace Manzili.Infrastructure.Repositories
             // =========================
 
             await dbTransaction.CommitAsync(cancellationToken);
+        }
+
+
+        // Get Payment Proof By Id
+        public async Task<PaymentProofDetailsDto> GetPaymentProofDetailsAsync(int transactionId, CancellationToken cancellationToken = default)
+        {
+            // =========================
+            // Get Order
+            // =========================
+
+            var order = await _context.Transactions
+                .AsNoTracking()
+                .Include(t => t.Service)
+                .Include(t => t.Buyer)
+                .Include(t => t.Provider)
+                .Include(t => t.PaymentProof)
+                .FirstOrDefaultAsync(
+                    t => t.Id == transactionId,
+                    cancellationToken);
+
+            // =========================
+            // Validation
+            // =========================
+
+            if (order is null)
+                throw new NotFoundException("Payment request not found.");
+
+            if (order.PaymentProofId is null)
+                throw new BusinessRuleException(
+                    "This order does not contain a payment proof.");
+
+            // =========================
+            // Check Escrow
+            // =========================
+
+            var escrowExists = await _context.Transactions
+                .AsNoTracking()
+                .AnyAsync(t =>
+                    t.ParentTransactionId == order.Id &&
+                    t.TransactionTypeId ==
+                        FinancialTransactionTypeEnum.EscrowPayment.ToId(),
+                    cancellationToken);
+
+            // =========================
+            // Projection
+            // =========================
+
+            return new PaymentProofDetailsDto
+            {
+                // =========================
+                // Order
+                // =========================
+
+                TransactionId = order.Id,
+
+                TransactionCode = order.TransactionCode,
+
+                Status =
+                    (OrderTransactionTypeEnum)order.TransactionTypeId,
+
+                RawPrice = order.RawPrice,
+
+                CashDiscount = order.CashDiscount,
+
+                DeliveryFees = order.DeliveryFees,
+
+                TotalPrice = order.TotalPrice + order.DeliveryFees,
+
+                CreatedAt = order.CreatedAt,
+
+                // =========================
+                // Service
+                // =========================
+
+                ServiceId = order.ServiceId,
+
+                ServiceTitle = order.Service?.Title,
+
+                // =========================
+                // Buyer
+                // =========================
+
+                BuyerId = order.BuyerId,
+
+                BuyerName = order.Buyer.FullName,
+
+                BuyerPhoneNumber = order.Buyer.PhoneNumber,
+
+                // =========================
+                // Provider
+                // =========================
+
+                ProviderId = order.ProviderId,
+
+                ProviderName = order.Provider.FullName,
+
+                ProviderPhoneNumber = order.Provider.PhoneNumber,
+
+                // =========================
+                // Payment Proof
+                // =========================
+
+                PaymentProofId = order.PaymentProof!.Id,
+
+                PaymentProofImageUrl = order.PaymentProof.ScreenshotUrl,
+
+                IsVerified = order.PaymentProof.IsVerified,
+
+                VerifiedAt = order.PaymentProof.VerifiedAt,
+
+                VerifiedByAdminId =
+                    order.PaymentProof.VerifiedByAdminId,
+
+                //IsRejected = order.PaymentProof.IsRejected,
+
+                //RejectionReason =
+                //    order.PaymentProof.RejectionReason,
+
+                //RejectedAt = order.PaymentProof.RejectedAt,
+
+                //RejectedByAdminId =
+                //    order.PaymentProof.RejectedByAdminId,
+
+                // =========================
+                // Financial State
+                // =========================
+
+                EscrowTransactionExists = escrowExists
+            };
         }
 
 

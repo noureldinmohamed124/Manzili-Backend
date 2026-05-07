@@ -39,8 +39,9 @@ namespace Manzili.Api.Controllers.Admin
         private readonly GetPaymentRequestsUseCase _getPaymentRequestsUseCase;
         private readonly ApprovePaymentUseCase _approvePaymentUseCase;
         private readonly RejectPaymentProofUseCase _rejectPaymentProofUseCase;
+        private readonly GetPaymentProofDetailsUseCase _getPaymentProofDetailsUseCase;
 
-        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase, ApprovePaymentUseCase approvePaymentUseCase, RejectPaymentProofUseCase rejectPaymentProofUseCase)
+        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase, ApprovePaymentUseCase approvePaymentUseCase, RejectPaymentProofUseCase rejectPaymentProofUseCase, GetPaymentProofDetailsUseCase getPaymentProofDetailsUseCase)
         {
             _getAdminDashboardStatsUseCase = getAdminDashboardStatsUseCase;
             _getAdminAllUsersUseCase = getAdminAllUsersUseCase;
@@ -53,6 +54,7 @@ namespace Manzili.Api.Controllers.Admin
             _getPaymentRequestsUseCase = getPaymentRequestsUseCase;
             _approvePaymentUseCase = approvePaymentUseCase;
             _rejectPaymentProofUseCase = rejectPaymentProofUseCase;
+            _getPaymentProofDetailsUseCase = getPaymentProofDetailsUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -229,5 +231,15 @@ namespace Manzili.Api.Controllers.Admin
 
             return OkResponse(Messages.Admin.RejectPaymentProof);
         }
+
+
+        [HttpGet("payment/{id}")]
+        public async Task<IActionResult> GetPaymentRequestDetails(int id, CancellationToken cancellationToken)
+        {
+            var result = await _getPaymentProofDetailsUseCase.ExecuteAsync(id, cancellationToken);
+            return OkResponse(result);
+        }
+
+
     }
 }
