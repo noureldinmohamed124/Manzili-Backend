@@ -1,4 +1,5 @@
 ﻿using Manzili.Application.Common.Enums;
+using Manzili.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace Manzili.Application.Common.Extensions
             OrderTransactionTypeEnum.Confirmed.ToId()
         };
 
-
+        public static int ToId(this FinancialTransactionTypeEnum status)
+        => (int)status;
     }
 }

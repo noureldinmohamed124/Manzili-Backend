@@ -18,7 +18,7 @@ namespace Manzili.Application.Admin.Payments.UseCases
             _adminRepo = adminRepo;
         }
 
-        public async Task<PagedResult<PaymentRequestDto>> ExecuteAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PaymentProofsRequestDto>> ExecuteAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default)
         {
             return await _adminRepo.GetPaymentRequestsAsync(query, cancellationToken);
         }

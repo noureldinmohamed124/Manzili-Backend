@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Manzili.Infrastructure.FileStorage
@@ -17,13 +18,24 @@ namespace Manzili.Infrastructure.FileStorage
             _environment = environment;
         }
 
-        public async Task<string> SaveImageAsync(Stream stream, string fileName, string folderName)
+        public async Task<string> SaveImageAsync(Stream stream, string fileName, string folderName, string? serviceTitle)
         {
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", folderName);
 
             Directory.CreateDirectory(uploadsFolder);
 
-            var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(fileName)}";
+            string uniqueName = "";
+
+            if (serviceTitle != null)
+            {
+                serviceTitle = Regex.Replace(serviceTitle ?? "", @"[^a-zA-Z0-9_]", "");
+                uniqueName = $"{serviceTitle}_";
+            }
+
+            string guid = Guid.NewGuid().ToString("N")[..8];
+            uniqueName += guid;
+
+            var uniqueFileName = $"{uniqueName}{Path.GetExtension(fileName)}";
 
             var fullPath = Path.Combine(uploadsFolder, uniqueFileName);
 

@@ -11,6 +11,7 @@ namespace Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 10;
 
+        public bool? IsVerified { get; set; }
         public int? BuyerId { get; set; }
         public int? ProviderId { get; set; }
 

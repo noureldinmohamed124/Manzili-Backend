@@ -9,7 +9,9 @@ using Manzili.Application.Admin.Users.Queries.GetAdminAllUsers;
 using Manzili.Application.Admin.Users.Queries.GetAdminUserById;
 using Manzili.Application.Common.Enums;
 using Manzili.Application.Common.Extensions;
+using Manzili.Application.Exceptions;
 using Manzili.Application.Seller.Queries.Services.GetDashboardStats;
+using Manzili.Domain.Entities;
 using Manzili.Domain.Enums;
 using Manzili.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -565,7 +567,7 @@ namespace Manzili.Infrastructure.Repositories
             };
         }
 
-        public async Task<PagedResult<PaymentRequestDto>> GetPaymentRequestsAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PaymentProofsRequestDto>> GetPaymentRequestsAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default)
         {
             // =========================
             // Base Query
@@ -574,7 +576,9 @@ namespace Manzili.Infrastructure.Repositories
             var queryable = _context.Transactions
                 .AsNoTracking()
                 .Where(t =>
-                    t.TransactionTypeId == OrderTransactionTypeEnum.PendingPaymentVerification.ToId() &&
+                    t.TransactionTypeId == OrderTransactionTypeEnum.PendingPaymentVerification.ToId() 
+                    || t.TransactionTypeId == OrderTransactionTypeEnum.Paid.ToId()
+                    &&
                     t.PaymentProofId != null &&
                     t.ServiceId != null);
 
@@ -606,6 +610,12 @@ namespace Manzili.Infrastructure.Repositories
                     .Where(t => t.CreatedAt <= query.To.Value);
             }
 
+            if (query.IsVerified.HasValue)
+            {
+                queryable = queryable
+                    .Where(t => t.PaymentProof.IsVerified == query.IsVerified.Value);
+            }
+
             // =========================
             // Count
             // =========================
@@ -627,7 +637,7 @@ namespace Manzili.Infrastructure.Repositories
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip(skip)
                 .Take(pageSize)
-                .Select(t => new PaymentRequestDto
+                .Select(t => new PaymentProofsRequestDto
                 {
                     TransactionId = t.Id,
 
@@ -640,6 +650,8 @@ namespace Manzili.Infrastructure.Repositories
 
                     TotalPrice = t.TotalPrice,
 
+                    IsVerified = t.PaymentProof!.IsVerified,
+
                     PaymentProofId = t.PaymentProofId!.Value,
                     PaymentProofImage = t.PaymentProof!.ScreenshotUrl, // adjust property name if different
 
@@ -647,7 +659,7 @@ namespace Manzili.Infrastructure.Repositories
                 })
                 .ToListAsync(cancellationToken);
 
-            return new PagedResult<PaymentRequestDto>
+            return new PagedResult<PaymentProofsRequestDto>
             {
                 Items = items,
                 TotalCount = totalCount,
@@ -655,6 +667,126 @@ namespace Manzili.Infrastructure.Repositories
                 PageSize = pageSize
             };
         }
+        
+        public async Task ApprovePaymentAsync(int transactionId, int adminId, CancellationToken cancellationToken = default)
+        {
+
+            // =========================
+            // Begin DB Transaction
+            // =========================
+
+            await using var dbTransaction =
+                await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            // =========================
+            // Get Root Order
+            // =========================
+
+            var rootOrder = await _context.Transactions
+                .FirstOrDefaultAsync(
+                    t => t.Id == transactionId,
+                    cancellationToken);
+
+            // =========================
+            // Validation: Exists
+            // =========================
+
+            if (rootOrder is null)
+                throw new ConflictException("Order not found.");
+
+            // =========================
+            // Validation: Has payment proof
+            // =========================
+
+            if (rootOrder.PaymentProofId is null)
+                throw new ConflictException("Payment proof not found.");
+
+            // =========================
+            // Validation: Correct state
+            // =========================
+
+            if (rootOrder.TransactionTypeId !=
+                OrderTransactionTypeEnum.PendingPaymentVerification.ToId())
+            {
+                throw new BusinessRuleException("Payment request already processed.");
+            }
+
+            // =========================
+            // Prevent duplicate escrow
+            // =========================
+
+            var escrowAlreadyExists = await _context.Transactions
+                .AnyAsync(t =>
+                    t.ParentTransactionId == rootOrder.Id &&
+                    t.TransactionTypeId ==
+                        FinancialTransactionTypeEnum.EscrowPayment.ToId(),
+                    cancellationToken);
+
+            if (escrowAlreadyExists)
+                throw new BusinessRuleException("Escrow payment already exists.");
+
+            // =========================
+            // Update Root Order → Paid
+            // =========================
+
+            rootOrder.TransactionTypeId =
+                OrderTransactionTypeEnum.Paid.ToId();
+
+            rootOrder.UpdatedAt = DateTime.UtcNow;
+
+            rootOrder.PaymentProof!.VerifiedAt = DateTime.UtcNow;
+            rootOrder.PaymentProof!.IsVerified = true;
+            rootOrder.PaymentProof!.VerifiedByAdminId = adminId;
+            // =========================
+            // Create Escrow Transaction
+            // =========================
+
+            var escrowTransaction = new Transaction
+            {
+                ParentTransactionId = rootOrder.Id,
+
+                TransactionCode = Guid.NewGuid().ToString(),
+
+                BuyerId = rootOrder.BuyerId,
+                ProviderId = rootOrder.ProviderId,
+
+                ServiceId = rootOrder.ServiceId,
+
+                RawPrice = rootOrder.RawPrice,
+                CashDiscount = rootOrder.CashDiscount,
+                TotalPrice = rootOrder.TotalPrice,
+
+                CustomRequestText = rootOrder.CustomRequestText,
+                CustomRequestImage = rootOrder.CustomRequestImage,
+
+                TransactionTypeId =
+                    FinancialTransactionTypeEnum.EscrowPayment.ToId(),
+
+                PaymentProofId = rootOrder.PaymentProofId,
+
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _context.Transactions.AddAsync(
+                escrowTransaction,
+                cancellationToken);
+
+            // =========================
+            // Save Changes
+            // =========================
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            // =========================
+            // Commit
+            // =========================
+
+            await dbTransaction.CommitAsync(cancellationToken);
+
+
+        }
+
 
 
         // Helper Method

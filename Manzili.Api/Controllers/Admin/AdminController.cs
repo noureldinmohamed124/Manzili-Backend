@@ -36,8 +36,9 @@ namespace Manzili.Api.Controllers.Admin
         private readonly GetAdminOrdersUseCase _getAdminOrdersUseCase;
         private readonly GetAdminFinancialsUseCase _getAdminFinancialsUseCase;
         private readonly GetPaymentRequestsUseCase _getPaymentRequestsUseCase;
+        private readonly ApprovePaymentUseCase _approvePaymentUseCase;
 
-        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase)
+        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase, ApprovePaymentUseCase approvePaymentUseCase)
         {
             _getAdminDashboardStatsUseCase = getAdminDashboardStatsUseCase;
             _getAdminAllUsersUseCase = getAdminAllUsersUseCase;
@@ -48,6 +49,7 @@ namespace Manzili.Api.Controllers.Admin
             _getAdminOrdersUseCase = getAdminOrdersUseCase;
             _getAdminFinancialsUseCase = getAdminFinancialsUseCase;
             _getPaymentRequestsUseCase = getPaymentRequestsUseCase;
+            _approvePaymentUseCase = approvePaymentUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -183,7 +185,7 @@ namespace Manzili.Api.Controllers.Admin
 
 
         [HttpGet("payments")]
-        public async Task<IActionResult> GetPaymentRequests([FromQuery] GetPaymentRequestsDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPaymentRequests([FromQuery] GetPaymentProofsRequestsDto dto, CancellationToken cancellationToken)
         {
             var query = new GetPaymentRequestsQuery
             {
@@ -192,7 +194,8 @@ namespace Manzili.Api.Controllers.Admin
                 Page = dto.Page,
                 PageSize = dto.PageSize,
                 ProviderId = dto.ProviderId,
-                To = dto.To
+                To = dto.To,
+                IsVerified = dto.IsVerified
             };
 
             var result = await _getPaymentRequestsUseCase.ExecuteAsync(query, cancellationToken);
@@ -200,5 +203,13 @@ namespace Manzili.Api.Controllers.Admin
             return OkResponse(result);
         }
 
+
+        [HttpPost("payment/approve")]
+        public async Task<IActionResult> ApprovePayment([FromBody] ApprovePaymentProofRequestDto dto, CancellationToken cancellationToken)
+        {
+            await _approvePaymentUseCase.ExecuteAsync(dto.TransactionId, cancellationToken);
+
+            return OkResponse(Messages.Admin.ApprovePaymentProof);
+        }
     }
 }

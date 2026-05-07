@@ -18,6 +18,8 @@ namespace Manzili.Application.Buyer.Queries.Orders.GetAllOrders
         public string OrderCode { get; set; } = string.Empty;
         public string ServiceName { get; set; } = string.Empty;
         public string CustomizationDetails { get; set; } = string.Empty;
+        public decimal RawOrderPrice { get; set; }
+        public decimal DeliveryFees { get; set; }
         public decimal TotalPrice { get; set; }
         public string Status { get; set; } = string.Empty;
         public string ProviderName { get; set; } = string.Empty;

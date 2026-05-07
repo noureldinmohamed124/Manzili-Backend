@@ -100,7 +100,7 @@ namespace Manzili.Api.Controllers.Seller
             foreach (var image in dto.Images)
             {
                 using var stream = image.OpenReadStream();
-                var imageUrl = await _fileStorageService.SaveImageAsync(stream, image.FileName, "services");
+                var imageUrl = await _fileStorageService.SaveImageAsync(stream, image.FileName, "services", dto.Title);
 
                 imageUrls.Add(imageUrl);
             }

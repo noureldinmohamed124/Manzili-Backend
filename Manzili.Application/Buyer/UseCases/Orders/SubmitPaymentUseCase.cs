@@ -16,13 +16,15 @@ namespace Manzili.Application.Buyer.UseCases.Orders
     {
         private readonly IOrderRepo _orderRepo;
         private readonly IPaymentProofRepo _paymentProofRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUser;
 
-        public SubmitPaymentUseCase(IOrderRepo orderRepo, IPaymentProofRepo paymentProofRepo, ICurrentUserService currentUser)
+        public SubmitPaymentUseCase(IOrderRepo orderRepo, IPaymentProofRepo paymentProofRepo, ICurrentUserService currentUser, IUnitOfWork unitOfWork)
         {
             _orderRepo = orderRepo;
             _paymentProofRepo = paymentProofRepo;
             _currentUser = currentUser;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<PaymentSuccessDto> ExecuteAsync(SubmitPaymentCommand command)
@@ -56,6 +58,7 @@ namespace Manzili.Application.Buyer.UseCases.Orders
                 order.PaymentProof = paymentProof;
             }
 
+            // save the payment proof to the database
             await _paymentProofRepo.AddAsync(paymentProof);
 
             decimal total = orders.Sum(o => o.TotalPrice);
@@ -67,7 +70,9 @@ namespace Manzili.Application.Buyer.UseCases.Orders
                 PaymentDate = DateTime.UtcNow,
                 Total = total + deliveryFees,
             };
-            
+
+            await _unitOfWork.SaveChangesAsync();
+
             return paymentSuccessDto;
         }
     }

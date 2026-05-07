@@ -30,7 +30,11 @@ namespace Manzili.Application.Abstractions.Persistence
         Task<AdminFinancialsResult> GetFinancialsAsync(GetAdminFinancialsQuery query, CancellationToken cancellationToken = default);
 
 
-        Task<PagedResult<PaymentRequestDto>> GetPaymentRequestsAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default);
+        Task<PagedResult<PaymentProofsRequestDto>> GetPaymentRequestsAsync(GetPaymentRequestsQuery query, CancellationToken cancellationToken = default);
+
+
+        // Approve Payment Proof Request
+        Task ApprovePaymentAsync(int transactionId, int adminId, CancellationToken cancellationToken = default);
 
     }
 }

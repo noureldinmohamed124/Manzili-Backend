@@ -37,6 +37,8 @@ builder.Services.AddControllers();
 // 1. DbContext
 builder.Services.AddDbContext<ManziliDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AspTest")));
+// CleanAsp
+// AspTest
 
 
 // 2. Repositories
@@ -109,6 +111,7 @@ builder.Services.AddScoped<GetAdminServicesUseCase>();
 builder.Services.AddScoped<GetAdminOrdersUseCase>();
 builder.Services.AddScoped<GetAdminFinancialsUseCase>();
 builder.Services.AddScoped<GetPaymentRequestsUseCase>();
+builder.Services.AddScoped<ApprovePaymentUseCase>();
 
 
 

@@ -34,6 +34,7 @@
         {
             public const string Blocked = "User Blocked successfully.";
             public const string Unblocked = "User Unblocked successfully.";
+            public const string ApprovePaymentProof = "Payment approved successfully.";
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Manzili.Domain.Entities
         public string? CustomRequestImage { get; set; }
         public decimal RawPrice { get; set; }
         public decimal CashDiscount { get; set; }
+        public decimal DeliveryFees { get; set; }
         public decimal TotalPrice { get; set; }
 
 

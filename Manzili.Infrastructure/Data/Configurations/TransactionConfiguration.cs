@@ -33,6 +33,9 @@ namespace Manzili.Infrastructure.Persistence.Configurations
             builder.Property(x => x.CashDiscount)
                 .HasPrecision(18, 2);
 
+            builder.Property(x => x.DeliveryFees)
+                .HasPrecision(18, 2);
+
             builder.Property(x => x.TotalPrice)
                 .HasPrecision(18, 2);
 

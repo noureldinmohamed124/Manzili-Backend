@@ -91,7 +91,7 @@ namespace Manzili.Api.Controllers
         public async Task<IActionResult> SubmitPayment([FromForm]SubmitPaymentRequestDto dto)
         {
             using var stream = dto.PaymentScreenshot.OpenReadStream();
-            var imageUrl = await _fileStorageService.SaveImageAsync(stream, dto.PaymentScreenshot.FileName, "payments");
+            var imageUrl = await _fileStorageService.SaveImageAsync(stream, dto.PaymentScreenshot.FileName, "payments", null);
 
             var command = new SubmitPaymentCommand(
                 OrderIds: dto.OrderIds,

@@ -8,6 +8,6 @@ namespace Manzili.Application.Abstractions.FileStorage
 {
     public interface IFileStorageService
     {
-        Task<string> SaveImageAsync(Stream stream, string fileName, string folderName);
+        Task<string> SaveImageAsync(Stream stream, string fileName, string folderName, string? serviceTitle);
     }
 }
