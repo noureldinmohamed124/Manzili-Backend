@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manzili.Application.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests
         public decimal TotalPrice { get; set; }
 
         public bool IsVerified { get; set; }
+        public OrderTransactionTypeEnum OrderStatus { get; set; }
 
         public string? PaymentProofImage { get; set; }
         public int PaymentProofId { get; set; }

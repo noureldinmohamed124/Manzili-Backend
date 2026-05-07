@@ -1,6 +1,7 @@
 ﻿using Manzili.Application.Admin.Dashboard.Queries.GetAdminDashboardStats;
 using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
+using Manzili.Application.Admin.Payments.Commands;
 using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
 using Manzili.Application.Admin.Users;
@@ -35,6 +36,10 @@ namespace Manzili.Application.Abstractions.Persistence
 
         // Approve Payment Proof Request
         Task ApprovePaymentAsync(int transactionId, int adminId, CancellationToken cancellationToken = default);
+
+
+        // Reject Payment Proof Request
+        Task RejectPaymentAsync(RejectPaymentProofCommand command, CancellationToken cancellationToken = default);
 
     }
 }

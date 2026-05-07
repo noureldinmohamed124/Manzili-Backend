@@ -5,6 +5,7 @@ using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Financials.UseCases;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
 using Manzili.Application.Admin.Orders.UseCases;
+using Manzili.Application.Admin.Payments.Commands;
 using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
 using Manzili.Application.Admin.Payments.UseCases;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
@@ -37,8 +38,9 @@ namespace Manzili.Api.Controllers.Admin
         private readonly GetAdminFinancialsUseCase _getAdminFinancialsUseCase;
         private readonly GetPaymentRequestsUseCase _getPaymentRequestsUseCase;
         private readonly ApprovePaymentUseCase _approvePaymentUseCase;
+        private readonly RejectPaymentProofUseCase _rejectPaymentProofUseCase;
 
-        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase, ApprovePaymentUseCase approvePaymentUseCase)
+        public AdminController(GetAdminDashboardStatsUseCase getAdminDashboardStatsUseCase, GetAdminAllUsersUseCase getAdminAllUsersUseCase, GetAdminUserDetailsUseCase getAdminUserDetailsUseCase, BlockUserUseCase blockUserUseCase, UnblockUserUseCase unblockUserUseCase, GetAdminServicesUseCase getAdminServicesUseCase, GetAdminOrdersUseCase getAdminOrdersUseCase, GetAdminFinancialsUseCase getAdminFinancialsUseCase, GetPaymentRequestsUseCase getPaymentRequestsUseCase, ApprovePaymentUseCase approvePaymentUseCase, RejectPaymentProofUseCase rejectPaymentProofUseCase)
         {
             _getAdminDashboardStatsUseCase = getAdminDashboardStatsUseCase;
             _getAdminAllUsersUseCase = getAdminAllUsersUseCase;
@@ -50,6 +52,7 @@ namespace Manzili.Api.Controllers.Admin
             _getAdminFinancialsUseCase = getAdminFinancialsUseCase;
             _getPaymentRequestsUseCase = getPaymentRequestsUseCase;
             _approvePaymentUseCase = approvePaymentUseCase;
+            _rejectPaymentProofUseCase = rejectPaymentProofUseCase;
         }
 
         [HttpGet("dashboard")]
@@ -210,6 +213,21 @@ namespace Manzili.Api.Controllers.Admin
             await _approvePaymentUseCase.ExecuteAsync(dto.TransactionId, cancellationToken);
 
             return OkResponse(Messages.Admin.ApprovePaymentProof);
+        }
+
+
+        [HttpPost("payment/reject")]
+        public async Task<IActionResult> RejectPayment([FromBody] RejectPaymentProofRequestDto dto, CancellationToken cancellationToken)
+        {
+            var command = new RejectPaymentProofCommand
+            {
+                RejectionReason = dto.RejectionReason,
+                TransactionId = dto.TransactionId,
+            };
+
+            await _rejectPaymentProofUseCase.ExecuteAsync(command, cancellationToken);
+
+            return OkResponse(Messages.Admin.RejectPaymentProof);
         }
     }
 }

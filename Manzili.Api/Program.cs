@@ -112,6 +112,7 @@ builder.Services.AddScoped<GetAdminOrdersUseCase>();
 builder.Services.AddScoped<GetAdminFinancialsUseCase>();
 builder.Services.AddScoped<GetPaymentRequestsUseCase>();
 builder.Services.AddScoped<ApprovePaymentUseCase>();
+builder.Services.AddScoped<RejectPaymentProofUseCase>();
 
 
 

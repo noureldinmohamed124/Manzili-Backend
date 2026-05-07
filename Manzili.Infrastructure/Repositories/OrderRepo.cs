@@ -87,7 +87,7 @@ namespace Manzili.Infrastructure.Repositories
         public async Task<SellerOrdersListDto> GetSellerOrdersAsync(int sellerId, GetSellerOrdersQuery query)
         {
             var ordersQuery = _context.Transactions.AsNoTracking()
-                .Where(t => t.ProviderId == sellerId && t.ServiceId != null);
+                .Where(t => t.ProviderId == sellerId && t.ServiceId != null && OrderTransactionTypeExtensions.ValidOrders.Contains(t.TransactionTypeId));
 
             if (query.Status.HasValue)
             {

@@ -2,6 +2,7 @@
 using Manzili.Application.Admin.Dashboard.Queries.GetAdminDashboardStats;
 using Manzili.Application.Admin.Financials.Queries;
 using Manzili.Application.Admin.Orders.Queries.GetAdminOrders;
+using Manzili.Application.Admin.Payments.Commands;
 using Manzili.Application.Admin.Payments.Queries.GetAllPaymentRequests;
 using Manzili.Application.Admin.Services.Queries.GetAdminServices;
 using Manzili.Application.Admin.Users;
@@ -580,6 +581,7 @@ namespace Manzili.Infrastructure.Repositories
                 .Where(t =>
                     t.TransactionTypeId == OrderTransactionTypeEnum.PendingPaymentVerification.ToId() 
                     || t.TransactionTypeId == OrderTransactionTypeEnum.Paid.ToId()
+                    || t.TransactionTypeId == OrderTransactionTypeEnum.PaymentRejected.ToId()
                     &&
                     t.PaymentProofId != null &&
                     t.ServiceId != null);
@@ -653,6 +655,7 @@ namespace Manzili.Infrastructure.Repositories
                     TotalPrice = t.TotalPrice + t.DeliveryFees,
 
                     IsVerified = t.PaymentProof!.IsVerified,
+                    OrderStatus = (OrderTransactionTypeEnum)t.TransactionTypeId,
 
                     PaymentProofId = t.PaymentProofId!.Value,
                     PaymentProofImage = t.PaymentProof!.ScreenshotUrl, // adjust property name if different
@@ -790,6 +793,93 @@ namespace Manzili.Infrastructure.Repositories
 
         }
 
+        // Reject Payment Proof
+        public async Task RejectPaymentAsync(RejectPaymentProofCommand command, CancellationToken cancellationToken = default)
+        {
+            // =========================
+            // Validation
+            // =========================
+
+            if (string.IsNullOrWhiteSpace(command.RejectionReason))
+                throw new Exception("Rejection reason is required.");
+
+            // =========================
+            // Begin DB Transaction
+            // =========================
+
+            await using var dbTransaction =
+                await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            // =========================
+            // Get Root Order
+            // =========================
+
+            var rootOrder = await _context.Transactions
+                .FirstOrDefaultAsync(
+                    t => t.Id == command.TransactionId,
+                    cancellationToken);
+
+            // =========================
+            // Validation: Exists
+            // =========================
+
+            if (rootOrder is null)
+                throw new Exception("Order not found.");
+
+            // =========================
+            // Validation: Has proof
+            // =========================
+
+            if (rootOrder.PaymentProofId is null)
+                throw new Exception("Payment proof not found.");
+
+            // =========================
+            // Validation: Correct state
+            // =========================
+
+            if (rootOrder.TransactionTypeId !=
+                OrderTransactionTypeEnum.PendingPaymentVerification.ToId())
+            {
+                throw new Exception("Payment request already processed.");
+            }
+
+            // =========================
+            // Prevent already approved
+            // =========================
+
+            var escrowExists = await _context.Transactions
+                .AnyAsync(t =>
+                    t.ParentTransactionId == rootOrder.Id &&
+                    t.TransactionTypeId ==
+                        FinancialTransactionTypeEnum.EscrowPayment.ToId(),
+                    cancellationToken);
+
+            if (escrowExists)
+                throw new Exception("Payment already approved.");
+
+            // =========================
+            // Reject Payment
+            // =========================
+
+            rootOrder.TransactionTypeId =
+                OrderTransactionTypeEnum.PaymentRejected.ToId();
+
+            rootOrder.RejectionReason = command.RejectionReason;
+
+            rootOrder.UpdatedAt = DateTime.UtcNow;
+
+            // =========================
+            // Save Changes
+            // =========================
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            // =========================
+            // Commit
+            // =========================
+
+            await dbTransaction.CommitAsync(cancellationToken);
+        }
 
 
         // Helper Method
