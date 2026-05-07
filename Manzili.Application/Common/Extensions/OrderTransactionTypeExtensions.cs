@@ -24,6 +24,23 @@ namespace Manzili.Application.Common.Extensions
             OrderTransactionTypeEnum.DeliveryAttemptFailed.ToId(),
             OrderTransactionTypeEnum.Delayed.ToId()
         };
+
+        public static readonly int[] ValidOrders =
+        {
+            OrderTransactionTypeEnum.Cart.ToId(),
+            OrderTransactionTypeEnum.Request.ToId(),
+            OrderTransactionTypeEnum.RePriced.ToId(),
+            OrderTransactionTypeEnum.AcceptedPrice.ToId(),
+            OrderTransactionTypeEnum.Accepted.ToId(),
+            OrderTransactionTypeEnum.PendingPaymentVerification.ToId(),
+            OrderTransactionTypeEnum.Paid.ToId(),
+            OrderTransactionTypeEnum.InProgress.ToId(),
+            OrderTransactionTypeEnum.ReadyForShipping.ToId(),
+            OrderTransactionTypeEnum.Shipped.ToId(),
+            OrderTransactionTypeEnum.OutForDelivery.ToId(),
+            OrderTransactionTypeEnum.DeliveryAttemptFailed.ToId(),
+            OrderTransactionTypeEnum.Delayed.ToId()
+        };
         public static bool IsTerminal(this OrderTransactionTypeEnum status)
         {
             return status == OrderTransactionTypeEnum.Rejected

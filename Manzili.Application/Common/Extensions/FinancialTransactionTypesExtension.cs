@@ -17,7 +17,8 @@ namespace Manzili.Application.Common.Extensions
             OrderTransactionTypeEnum.ReadyForShipping.ToId(),
             OrderTransactionTypeEnum.Shipped.ToId(),
             OrderTransactionTypeEnum.OutForDelivery.ToId(),
-            OrderTransactionTypeEnum.Confirmed.ToId()
+            OrderTransactionTypeEnum.Confirmed.ToId(),
+            FinancialTransactionTypeEnum.EscrowPayment.ToId(),
         };
 
         public static int ToId(this FinancialTransactionTypeEnum status)

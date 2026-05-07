@@ -153,13 +153,15 @@ namespace Manzili.Infrastructure.Repositories
 
         public async Task<PagedResult<AdminUserDto>> GetAdminAllUsersAsync(GetAdminAllUsersQuery query, CancellationToken cancellationToken = default)
         {
-            var usersQuery = _context.Users.AsNoTracking().AsQueryable();
+            var usersQuery = _context.Users
+                .Where(u => u.Role != UserRole.Admin)
+                .AsNoTracking().AsQueryable();
 
             // =========================
             // Filtering
             // =========================
 
-            if (query.Role.HasValue)
+            if (query.Role.HasValue && query.Role.Value != UserRole.Admin)
             {
                 usersQuery = usersQuery
                     .Where(u => u.Role == query.Role.Value);
@@ -547,7 +549,7 @@ namespace Manzili.Infrastructure.Repositories
 
                     TotalPrice = t.TotalPrice,
 
-                    Status = (OrderTransactionTypeEnum)t.TransactionTypeId,
+                    Status = (FinancialTransactionTypeEnum)t.TransactionTypeId,
 
                     CreatedAt = t.CreatedAt
                 })
@@ -613,7 +615,7 @@ namespace Manzili.Infrastructure.Repositories
             if (query.IsVerified.HasValue)
             {
                 queryable = queryable
-                    .Where(t => t.PaymentProof.IsVerified == query.IsVerified.Value);
+                    .Where(t => t.PaymentProof!.IsVerified == query.IsVerified.Value);
             }
 
             // =========================
@@ -648,7 +650,7 @@ namespace Manzili.Infrastructure.Repositories
                     BuyerName = t.Buyer.FullName,
                     ProviderName = t.Provider.FullName,
 
-                    TotalPrice = t.TotalPrice,
+                    TotalPrice = t.TotalPrice + t.DeliveryFees,
 
                     IsVerified = t.PaymentProof!.IsVerified,
 
@@ -683,6 +685,7 @@ namespace Manzili.Infrastructure.Repositories
             // =========================
 
             var rootOrder = await _context.Transactions
+                .Include(t => t.PaymentProof)
                 .FirstOrDefaultAsync(
                     t => t.Id == transactionId,
                     cancellationToken);
@@ -754,13 +757,12 @@ namespace Manzili.Infrastructure.Repositories
 
                 RawPrice = rootOrder.RawPrice,
                 CashDiscount = rootOrder.CashDiscount,
-                TotalPrice = rootOrder.TotalPrice,
+                TotalPrice = rootOrder.TotalPrice + rootOrder.DeliveryFees,
 
-                CustomRequestText = rootOrder.CustomRequestText,
-                CustomRequestImage = rootOrder.CustomRequestImage,
+                //CustomRequestText = rootOrder.CustomRequestText,
+                //CustomRequestImage = rootOrder.CustomRequestImage,
 
-                TransactionTypeId =
-                    FinancialTransactionTypeEnum.EscrowPayment.ToId(),
+                TransactionTypeId = FinancialTransactionTypeEnum.EscrowPayment.ToId(),
 
                 PaymentProofId = rootOrder.PaymentProofId,
 
@@ -770,7 +772,8 @@ namespace Manzili.Infrastructure.Repositories
 
             await _context.Transactions.AddAsync(
                 escrowTransaction,
-                cancellationToken);
+                cancellationToken
+            );
 
             // =========================
             // Save Changes

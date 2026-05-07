@@ -10,5 +10,6 @@ namespace Manzili.Application.Abstractions.Persistence
     public interface IAddressRepo : IGenericRepo<Address>
     {
         public Task<Address?> GetDefaultAddressAsync(int buyerId);
+        public Task<Address?> GetByBuyerIdAsync(int buyerId);
     }
 }

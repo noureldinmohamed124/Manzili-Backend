@@ -36,7 +36,7 @@ builder.Services.AddControllers();
 
 // 1. DbContext
 builder.Services.AddDbContext<ManziliDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AspTest")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CleanAsp")));
 // CleanAsp
 // AspTest
 

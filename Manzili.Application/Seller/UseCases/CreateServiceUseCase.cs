@@ -31,7 +31,7 @@ namespace Manzili.Application.Seller.UseCases
         {
             int sellerId = _currentUser.UserId;
 
-            await ValidateAsync(command);
+            ValidateAsync(command);
 
             var service = new Service
             {
@@ -76,7 +76,7 @@ namespace Manzili.Application.Seller.UseCases
             await _unitOfWork.SaveChangesAsync();
         }
 
-        private async Task ValidateAsync(CreateServiceCommand command)
+        private void ValidateAsync(CreateServiceCommand command)
         {
             if (string.IsNullOrWhiteSpace(
                 command.Title))
@@ -93,13 +93,6 @@ namespace Manzili.Application.Seller.UseCases
             {
                 throw new ValidationException("At least one image is required");
             }
-
-            //var categoryExists = await _categoryRepo.ExistsAsync(command.CategoryId);
-            //if (!categoryExists)
-            //{
-            //    throw new NotFoundException(
-            //        "Category not found");
-            //}
 
             /*
              DO NOT trust frontend validation.

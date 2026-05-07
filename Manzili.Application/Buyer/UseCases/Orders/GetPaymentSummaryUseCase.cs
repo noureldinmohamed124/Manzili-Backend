@@ -44,7 +44,7 @@ namespace Manzili.Application.Buyer.UseCases.Orders
 
             decimal deliveryFees = 40m;
             
-            var address = await _addressRepo.GetByIdAsync(buyerId);
+            var address = await _addressRepo.GetByBuyerIdAsync(buyerId);
 
             if (address == null)
                 throw new NotFoundException("You don't have delivery Address, Should Enter 1 at First");

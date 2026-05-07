@@ -80,13 +80,13 @@ namespace Manzili.Application.Buyer.UseCases.Orders
                 }
             }
 
-            decimal cashDiscount = 0;
+            decimal cashDiscount = 0m;
             decimal deliveryFees = 40m;
 
             transaction.RawPrice = subtotal;
             transaction.CashDiscount = cashDiscount;
             transaction.DeliveryFees = deliveryFees;
-            transaction.TotalPrice = subtotal + optionsPrice + deliveryFees - cashDiscount;
+            transaction.TotalPrice = subtotal + optionsPrice - cashDiscount;
 
 
             await _orderRepo.AddAsync(transaction);

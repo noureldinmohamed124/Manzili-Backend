@@ -140,7 +140,7 @@ namespace Manzili.Api.Controllers.Seller
                     using var stream = image.OpenReadStream();
 
                     var imageUrl = await _fileStorageService
-                        .SaveImageAsync(stream, image.FileName, "services");
+                        .SaveImageAsync(stream, image.FileName, "services", dto.Title);
 
                     imageUrls.Add(imageUrl);
                 }

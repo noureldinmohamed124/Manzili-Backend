@@ -25,7 +25,7 @@ namespace Manzili.Infrastructure.Repositories
         public async Task<OrdersListDto> GetAllOrdersAsync(int buyerId, OrderTransactionTypeEnum? status)
         {
             var query = _context.Transactions
-                .Where(t => t.BuyerId == buyerId);
+                .Where(t => t.BuyerId == buyerId && OrderTransactionTypeExtensions.ValidOrders.Contains(t.TransactionTypeId));
 
             if (status.HasValue)
             {
@@ -42,7 +42,7 @@ namespace Manzili.Infrastructure.Repositories
                     Id = t.Id,
                     OrderCode = t.TransactionCode,
                     ServiceName = t.Service!.Title,
-                    RawOrderPrice = t.TotalPrice,
+                    RawOrderPrice = t.RawPrice,
                     DeliveryFees = t.DeliveryFees,
                     TotalPrice = t.TotalPrice,
                     Status = t.TransactionType.TransactionTypeName,

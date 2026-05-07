@@ -16,6 +16,13 @@ namespace Manzili.Infrastructure.Repositories
         {
         }
 
+        public async Task<Address?> GetByBuyerIdAsync(int buyerId)
+        {
+            return await _context.Addresses
+                .Where(a => a.UserId == buyerId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Address?> GetDefaultAddressAsync(int buyerId)
         {
             return await _context.Addresses
